@@ -1,0 +1,23 @@
+[
+  { "key": "alchemist", "name": "Alchemist's Supplies", "img": "icons/tools/cooking/mortar-herbs-yellow.webp" },
+  { "key": "brewer", "name": "Brewer's Supplies", "img": "icons/tools/laboratory/bowl-herbs-green.webp" },
+  { "key": "calligrapher", "name": "Calligrapher's Supplies", "img": "icons/tools/scribal/pen-steel-grey-brown.webp" },
+  { "key": "carpenter", "name": "Carpenter's Tools", "img": "icons/tools/hand/saw-steel-grey.webp" },
+  { "key": "cartographer", "name": "Cartographer's Tools", "img": "icons/tools/navigation/map-chart-tan.webp" },
+  { "key": "cobbler", "name": "Cobbler's Tools", "img": "icons/tools/hand/awl-steel-tan.webp" },
+  { "key": "cook", "name": "Cook's Utensils", "img": "icons/tools/laboratory/bowl-mixing.webp" },
+  { "key": "forg", "name": "Forgery Kit", "img": "icons/tools/scribal/ink-quill-red.webp" },
+  { "key": "glassblower", "name": "Glassblower's Tools", "img": "icons/tools/laboratory/alembic-glass-ball-blue.webp" },
+  { "key": "herb", "name": "Herbalism Kit", "img": "icons/tools/laboratory/bowl-herbs-green.webp" },
+  { "key": "jeweler", "name": "Jeweler's Tools", "img": "icons/tools/hand/engraving-tool-black.webp" },
+  { "key": "leatherworker", "name": "Leatherworker's Tools", "img": "icons/tools/hand/awl-steel-tan.webp" },
+  { "key": "mason", "name": "Mason's Tools", "img": "icons/tools/hand/hammer-and-nail.webp" },
+  { "key": "painter", "name": "Painter's Supplies", "img": "icons/tools/hand/brush-paint-brown-tan.webp" },
+  { "key": "pois", "name": "Poisoner's Kit", "img": "icons/tools/laboratory/vial-orange.webp" },
+  { "key": "potter", "name": "Potter's Tools", "img": "icons/tools/cooking/bowl-steaming-brown.webp" },
+  { "key": "smith", "name": "Smith's Tools", "img": "icons/tools/smithing/tongs-steel-grey.webp" },
+  { "key": "thief", "name": "Thieves' Tools", "img": "icons/tools/hand/lockpicks-steel-grey.webp" },
+  { "key": "tinker", "name": "Tinker's Tools", "img": "icons/tools/hand/wrench-adjustable.webp" },
+  { "key": "weaver", "name": "Weaver's Tools", "img": "icons/tools/hand/spinning-wheel-brown.webp" },
+  { "key": "woodcarver", "name": "Woodcarver's Tools", "img": "icons/tools/hand/chisel-steel-brown.webp" }
+]

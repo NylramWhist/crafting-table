@@ -1,0 +1,9 @@
+{{#if isFailure}}
+  <div class="ctgm__empty-card" data-empty-outcome-results>
+    <i class="fas fa-box-open"></i>
+    <strong>{{localize "CRAFTINGTABLE.GM.FailureItemsOptional"}}</strong>
+    <span>{{localize "CRAFTINGTABLE.GM.DropFailureHelp"}}</span>
+  </div>
+{{else}}
+  <p class="ctgm__empty" data-empty-outcome-results>{{localize "CRAFTINGTABLE.GM.NoCriticalFailureResults"}}</p>
+{{/if}}

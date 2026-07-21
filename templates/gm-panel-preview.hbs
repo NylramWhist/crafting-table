@@ -1,0 +1,47 @@
+      <aside class="ctgm__right" id="ctgm-responsive-preview" data-gm-responsive-pane="preview">
+        <section class="ctgm__panel">
+          <h3>{{localize "CRAFTINGTABLE.GM.RecipePreview"}} <i class="fas fa-eye"></i></h3>
+          {{#if selectedRecipe}}
+            <div class="ctgm__player-preview">
+              <img src="{{selectedRecipe.img}}" alt="" data-live="img" />
+              <div>
+                <strong data-live="name">{{selectedRecipe.name}}</strong>
+                <small data-live="category">{{selectedRecipe.categoryLabel}}</small>
+                {{#if selectedRecipe.invalid}}<em class="ctgm__preview-invalid">{{localize "CRAFTINGTABLE.GM.InvalidRecipe"}}</em>{{else}}<em class="is-ready">{{localize "CRAFTINGTABLE.GM.ReadyToCraft"}}</em>{{/if}}
+              </div>
+            </div>
+            <div class="ctgm__preview-requirements">
+              <span>{{selectedRecipe.toolName}}</span>
+              {{#each selectedRecipe.ingredients}}
+                <span>{{name}} x{{quantity}}</span>
+              {{/each}}
+            </div>
+            <dl class="ctgm__preview-stats">
+              <div><dt>{{localize "CRAFTINGTABLE.GM.DC"}}</dt><dd data-live="dc">{{selectedRecipe.dc}}</dd></div>
+              <div><dt>{{localize "CRAFTINGTABLE.GM.Time"}}</dt><dd data-live="time">{{selectedRecipe.time}}</dd></div>
+              <div><dt>{{localize "CRAFTINGTABLE.GM.Cost"}}</dt><dd data-live="cost">{{selectedRecipe.costGp}} {{selectedRecipe.costDenomination}}</dd></div>
+              <div><dt>{{localize "CRAFTINGTABLE.GM.Result"}}</dt><dd data-live="result">{{selectedRecipe.resultName}} x{{selectedRecipe.result.quantity}}</dd></div>
+            </dl>
+          {{else}}
+            <p class="ctgm__empty">{{localize "CRAFTINGTABLE.GM.SelectPreview"}}</p>
+          {{/if}}
+        </section>
+
+        <section class="ctgm__panel">
+          <h3>{{localize "CRAFTINGTABLE.GM.RecipeSummary"}}</h3>
+          {{#if selectedRecipe}}
+            <dl class="ctgm__summary">
+              <div><dt>{{localize "CRAFTINGTABLE.GM.Type"}}</dt><dd>{{selectedRecipe.categoryLabel}} {{localize "CRAFTINGTABLE.GM.Recipe"}}</dd></div>
+              <div><dt>{{localize "CRAFTINGTABLE.GM.Rarity"}}</dt><dd>{{selectedRecipe.rarityLabel}}</dd></div>
+              <div><dt>{{localize "CRAFTINGTABLE.GM.Tool"}}</dt><dd>{{selectedRecipe.toolName}}</dd></div>
+              <div><dt>{{localize "CRAFTINGTABLE.GM.Ability"}}</dt><dd>{{selectedRecipe.abilityLabel}}</dd></div>
+              <div><dt>{{localize "CRAFTINGTABLE.GM.DC"}}</dt><dd data-live="dc">{{selectedRecipe.dc}}</dd></div>
+              <div><dt>{{localize "CRAFTINGTABLE.GM.Time"}}</dt><dd data-live="time">{{selectedRecipe.time}}</dd></div>
+              <div><dt>{{localize "CRAFTINGTABLE.GM.Cost"}}</dt><dd data-live="cost">{{selectedRecipe.costGp}} {{selectedRecipe.costDenomination}}</dd></div>
+              <div><dt>{{localize "CRAFTINGTABLE.GM.Mode"}}</dt><dd>{{selectedRecipe.modeLabel}}</dd></div>
+              <div><dt>{{localize "CRAFTINGTABLE.GM.Ingredients"}}</dt><dd><span data-live="ingredients">{{selectedRecipe.ingredientCount}}</span> ({{selectedRecipe.requiredIngredientCount}} {{localize "CRAFTINGTABLE.GM.RequiredCount"}})</dd></div>
+              <div><dt>{{localize "CRAFTINGTABLE.GM.Result"}}</dt><dd data-live="result">{{selectedRecipe.resultName}} x{{selectedRecipe.result.quantity}}</dd></div>
+            </dl>
+          {{/if}}
+        </section>
+      </aside>

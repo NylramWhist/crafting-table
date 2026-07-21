@@ -1,0 +1,15 @@
+<section class="ctgm {{#if advancedMode}}is-advanced{{/if}} {{gmPanelLayoutClass}}" data-gm-panel-layout="{{gmPanelLayout}}" data-gm-panel-layout-setting="{{gmPanelRequestedLayout}}" data-gm-responsive-view="{{gmResponsiveView}}" style="{{gmPanelStyle}}" aria-label="{{localize "CRAFTINGTABLE.GM.PanelTitle"}}">
+  <header data-application-part="header"></header>
+  <div class="ctgm__layout tab {{tabs.recipes.cssClass}}" id="ctgm-panel-recipes" role="tabpanel" aria-labelledby="ctgm-tab-recipes" data-group="primary" data-tab="recipes">
+    <nav class="ctgm__responsive-nav" role="tablist" aria-label="{{localize "CRAFTINGTABLE.GM.ResponsiveNavigation"}}">
+      <button type="button" role="tab" aria-controls="ctgm-responsive-library" aria-selected="{{#if isGmLibraryView}}true{{else}}false{{/if}}" data-gm-responsive-view="library"><i class="fas fa-list" aria-hidden="true"></i> {{localize "CRAFTINGTABLE.GM.Recipes"}}</button>
+      <button type="button" role="tab" aria-controls="ctgm-responsive-editor" aria-selected="{{#if isGmEditorView}}true{{else}}false{{/if}}" data-gm-responsive-view="editor"><i class="fas fa-pen" aria-hidden="true"></i> {{localize "CRAFTINGTABLE.GM.Editor"}}</button>
+      <button type="button" role="tab" aria-controls="ctgm-responsive-preview" aria-selected="{{#if isGmPreviewView}}true{{else}}false{{/if}}" data-gm-responsive-view="preview"><i class="fas fa-eye" aria-hidden="true"></i> {{localize "CRAFTINGTABLE.GM.RecipePreview"}}</button>
+    </nav>
+    <aside data-application-part="library"></aside>
+    <main data-application-part="editor"></main>
+    <aside data-application-part="preview"></aside>
+  </div>
+  <section data-application-part="importExport"></section>
+  <section data-application-part="requests"></section>
+</section>

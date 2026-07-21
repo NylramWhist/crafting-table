@@ -1,0 +1,13 @@
+<aside class="d5ecb__sidebar" aria-label="{{labels.categoryNavigation}}">
+  <h3>{{labels.categories}}</h3>
+  <button type="button" class="d5ecb__category {{#if isAllCategory}}is-active{{/if}}" data-category="all" aria-pressed="{{#if isAllCategory}}true{{else}}false{{/if}}">
+    <span>{{labels.allRecipes}}</span>
+    <strong>{{counts.all}}</strong>
+  </button>
+  {{#each categories}}
+    <button type="button" class="d5ecb__category {{#if active}}is-active{{/if}}" data-category="{{id}}" aria-pressed="{{#if active}}true{{else}}false{{/if}}">
+      <span>{{label}}</span>
+      <strong>{{count}}</strong>
+    </button>
+  {{/each}}
+</aside>

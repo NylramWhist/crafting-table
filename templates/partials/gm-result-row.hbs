@@ -1,0 +1,22 @@
+<div class="ctgm__result-row" data-result-row data-editor-row>
+  <div class="ctgm__row-order" aria-label="{{localize "CRAFTINGTABLE.GM.ReorderRow"}}">
+    <button type="button" class="ctgm__drag-handle" draggable="true" data-row-drag-handle title="{{localize "CRAFTINGTABLE.GM.DragToReorder"}}" aria-label="{{localize "CRAFTINGTABLE.GM.DragToReorder"}}" {{#unless editable}}disabled{{/unless}}><i class="fas fa-grip-vertical" aria-hidden="true"></i></button>
+    <button type="button" class="ctgm__row-move" data-action="move-row-up" title="{{localize "CRAFTINGTABLE.GM.MoveUp"}}" aria-label="{{localize "CRAFTINGTABLE.GM.MoveUp"}}" {{#unless editable}}disabled{{/unless}}><i class="fas fa-chevron-up" aria-hidden="true"></i></button>
+    <button type="button" class="ctgm__row-move" data-action="move-row-down" title="{{localize "CRAFTINGTABLE.GM.MoveDown"}}" aria-label="{{localize "CRAFTINGTABLE.GM.MoveDown"}}" {{#unless editable}}disabled{{/unless}}><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+  </div>
+  <img class="ctgm__row-icon" src="{{img}}" alt="" />
+  <label>
+    {{localize "CRAFTINGTABLE.GM.Name"}}
+    <input type="text" name="result.name" value="{{name}}" placeholder="{{localize "CRAFTINGTABLE.GM.ResultPlaceholder"}}" {{#unless editable}}readonly{{/unless}} />
+  </label>
+  <input type="hidden" name="result.img" value="{{img}}" />
+  <label data-advanced-field>
+    {{localize "CRAFTINGTABLE.GM.UUID"}}
+    <input type="text" name="result.uuid" value="{{uuid}}" placeholder="Compendium.dnd5e.items.Item..." {{#unless editable}}readonly{{/unless}} />
+  </label>
+  <label>
+    {{localize "CRAFTINGTABLE.GM.Quantity"}}
+    <input type="number" name="result.quantity" value="{{quantity}}" min="1" step="1" required {{#unless editable}}readonly{{/unless}} />
+  </label>
+  <button type="button" class="ctgm__icon-action is-danger" data-action="remove-result-row" title="{{localize "CRAFTINGTABLE.GM.RemoveResult"}}" aria-label="{{localize "CRAFTINGTABLE.GM.RemoveResult"}}" {{#unless editable}}disabled{{/unless}}><i class="fas fa-trash"></i></button>
+</div>

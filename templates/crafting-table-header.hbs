@@ -1,0 +1,14 @@
+<header class="d5ecb__top">
+  <div>
+    <h2>{{actor.name}}</h2>
+    <p>{{localize "CRAFTINGTABLE.CraftingTable"}}</p>
+  </div>
+  <div class="d5ecb__search">
+    <input type="search" name="search" value="{{search}}" placeholder="{{labels.searchPlaceholder}}" aria-label="{{labels.searchLabel}}" autocomplete="off" />
+    <select name="visibility" aria-label="{{labels.visibilityLabel}}">
+      <option value="known" {{#if visibilityKnown}}selected{{/if}}>{{labels.visibilityKnown}}</option>
+      <option value="ready" {{#if visibilityReady}}selected{{/if}}>{{labels.visibilityReady}}</option>
+      <option value="all" {{#if visibilityAll}}selected{{/if}}>{{labels.visibilityAll}}</option>
+    </select>
+  </div>
+</header>

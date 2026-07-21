@@ -1,0 +1,69 @@
+      <aside class="ctgm__left" id="ctgm-responsive-library" data-gm-responsive-pane="library">
+        <section class="ctgm__panel">
+          <button type="button" class="ctgm__wide-action" data-action="create-recipe">
+            <i class="fas fa-plus"></i>
+            {{localize "CRAFTINGTABLE.GM.CreateRecipe"}}
+          </button>
+          <div class="ctgm__search">
+            <input type="search" name="gm-search" value="{{search}}" placeholder="{{localize "CRAFTINGTABLE.GM.SearchRecipes"}}" aria-label="{{localize "CRAFTINGTABLE.GM.SearchRecipes"}}" autocomplete="off" />
+            <i class="fas fa-search"></i>
+          </div>
+          <div class="ctgm__category-heading">
+            <h3>{{localize "CRAFTINGTABLE.GM.Categories"}}</h3>
+            <div>
+              <button type="button" class="ctgm__tiny-action" data-action="add-category" title="{{localize "CRAFTINGTABLE.GM.AddCategory"}}" aria-label="{{localize "CRAFTINGTABLE.GM.AddCategory"}}"><i class="fas fa-plus"></i></button>
+              <button type="button" class="ctgm__tiny-action" data-action="edit-category" title="{{localize "CRAFTINGTABLE.GM.EditCategory"}}" aria-label="{{localize "CRAFTINGTABLE.GM.EditCategory"}}" {{#if isAllCategory}}disabled{{/if}}><i class="fas fa-pen"></i></button>
+            </div>
+          </div>
+          <label class="ctgm__category-name-field">
+            {{localize "CRAFTINGTABLE.GM.CategoryName"}}
+            <input type="text" name="gm-category-name" value="{{categoryToolLabel}}" placeholder="{{localize "CRAFTINGTABLE.GM.NewCategory"}}" />
+          </label>
+          <button type="button" class="ctgm__category {{#if isAllCategory}}is-active{{/if}}" data-category="all" aria-pressed="{{#if isAllCategory}}true{{else}}false{{/if}}">
+            <span><i class="fas fa-folder-open"></i> {{localize "CRAFTINGTABLE.GM.AllRecipes"}}</span>
+            <strong>{{recipeCount}}</strong>
+          </button>
+          {{#each categories}}
+            <button type="button" class="ctgm__category {{#if active}}is-active{{/if}}" data-category="{{id}}" aria-pressed="{{#if active}}true{{else}}false{{/if}}">
+              <span>{{label}}</span>
+              <strong>{{count}}</strong>
+            </button>
+          {{/each}}
+          <button type="button" class="ctgm__wide-action" data-action="manage-categories">
+            <i class="fas fa-folder"></i>
+            {{localize "CRAFTINGTABLE.GM.ManageCategories"}}
+          </button>
+        </section>
+
+        <section class="ctgm__panel ctgm__filters-panel">
+          <h3>{{localize "CRAFTINGTABLE.GM.Filters"}}</h3>
+          <label>
+            {{localize "CRAFTINGTABLE.GM.Rarity"}}
+            <select data-gm-filter="rarity">
+              {{#each recipeFilters.rarityOptions}}
+                <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+              {{/each}}
+            </select>
+          </label>
+          <label>
+            {{localize "CRAFTINGTABLE.GM.CraftingMode"}}
+            <select data-gm-filter="mode">
+              {{#each recipeFilters.modeOptions}}
+                <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+              {{/each}}
+            </select>
+          </label>
+          <label>
+            {{localize "CRAFTINGTABLE.GM.Time"}}
+            <select data-gm-filter="time">
+              {{#each recipeFilters.timeOptions}}
+                <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+              {{/each}}
+            </select>
+          </label>
+          <button type="button" class="ctgm__wide-action" data-action="reset-recipe-filters" {{#unless hasRecipeFilters}}disabled{{/unless}}>
+            <i class="fas fa-undo"></i>
+            {{localize "CRAFTINGTABLE.GM.ResetFilters"}}
+          </button>
+        </section>
+      </aside>

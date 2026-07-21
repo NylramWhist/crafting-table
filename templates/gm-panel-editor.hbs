@@ -1,0 +1,696 @@
+      <main class="ctgm__center" id="ctgm-responsive-editor" data-gm-responsive-pane="editor">
+        {{#if isRecipeEditorMode}}
+        {{#if selectedRecipe}}
+          <form class="ctgm__sheet" data-recipe-editor>
+            <header class="ctgm__recipe-header">
+              <img src="{{selectedRecipe.img}}" alt="" data-live="img" />
+              <div>
+                <h2 data-live="name">{{selectedRecipe.name}}</h2>
+                <p><span data-live="category">{{selectedRecipe.categoryLabel}}</span> {{localize "CRAFTINGTABLE.GM.Recipe"}}</p>
+              </div>
+              <span class="ctgm__rarity">{{selectedRecipe.rarityLabel}}</span>
+              <span class="ctgm__dirty-badge" data-unsaved-indicator {{#unless hasUnsavedChanges}}hidden{{/unless}}>{{localize "CRAFTINGTABLE.GM.UnsavedChanges"}}</span>
+              <div class="ctgm__header-actions">
+                <button type="button" data-action="cancel-edit-recipe"><i class="fas fa-list"></i> {{localize "CRAFTINGTABLE.GM.Back"}}</button>
+                <button type="button" data-action="duplicate-recipe"><i class="fas fa-copy"></i> {{localize "CRAFTINGTABLE.GM.Duplicate"}}</button>
+                <button type="button" data-action="delete-recipe" class="is-danger" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-trash"></i> {{localize "CRAFTINGTABLE.GM.Delete"}}</button>
+              </div>
+            </header>
+
+            {{#unless selectedRecipe.editable}}
+              <p class="ctgm__notice">{{localize "CRAFTINGTABLE.GM.CompendiumNotice"}}</p>
+            {{/unless}}
+
+            {{#if selectedRecipe.invalid}}
+              <section class="ctgm__validation">
+                <strong>{{localize "CRAFTINGTABLE.GM.InvalidData"}}</strong>
+                <ul>
+                  {{#each selectedRecipe.validationErrors}}
+                    <li>{{this}}</li>
+                  {{/each}}
+                </ul>
+              </section>
+            {{/if}}
+
+            {{#if validationErrors.length}}
+              <section class="ctgm__validation">
+                <strong>{{localize "CRAFTINGTABLE.GM.CannotSave"}}</strong>
+                <ul>
+                  {{#each validationErrors}}
+                    <li>{{this}}</li>
+                  {{/each}}
+                </ul>
+              </section>
+            {{/if}}
+
+            <div class="ctgm__section-toolbar">
+              <button type="button" data-action="expand-all-sections"><i class="fas fa-chevron-down"></i> {{localize "CRAFTINGTABLE.GM.ExpandAll"}}</button>
+              <button type="button" data-action="collapse-all-sections"><i class="fas fa-chevron-right"></i> {{localize "CRAFTINGTABLE.GM.CollapseAll"}}</button>
+            </div>
+
+            <section class="ctgm__pane ctgm__accordion">
+              <section class="ctgm__collapse {{#if isBasicOpen}}is-open{{/if}}" data-collapse-section="basic">
+                <button type="button" class="ctgm__collapse-header" data-collapse-toggle="basic" aria-controls="ctgm-section-basic" aria-expanded="{{#if isBasicOpen}}true{{else}}false{{/if}}">
+                  <span><i class="fas fa-scroll"></i> {{localize "CRAFTINGTABLE.GM.BasicInfo"}}</span>
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="ctgm__collapse-body" id="ctgm-section-basic" {{#unless isBasicOpen}}hidden{{/unless}}>
+                  <div class="ctgm__details-grid ctgm__basic-grid">
+                  <div class="ctgm__portrait ctgm__basic-portrait">
+                    <img src="{{selectedRecipe.img}}" alt="" data-live="img" />
+                  </div>
+                  <label class="ctgm__basic-name">
+                    {{localize "CRAFTINGTABLE.GM.Name"}}
+                    <input type="text" name="recipe.name" value="{{selectedRecipe.name}}" required {{#unless selectedRecipe.editable}}readonly{{/unless}} />
+                  </label>
+                  <label class="ctgm__basic-category">
+                    {{localize "CRAFTINGTABLE.GM.Category"}}
+                    <select name="recipe.category" required {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                      {{#each selectedRecipe.categoryOptions}}
+                        <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                      {{/each}}
+                    </select>
+                  </label>
+                  <label class="ctgm__basic-rarity">
+                    {{localize "CRAFTINGTABLE.GM.Rarity"}}
+                    <select name="recipe.rarity" {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                      {{#each selectedRecipe.rarityOptions}}
+                        <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                      {{/each}}
+                    </select>
+                  </label>
+                  <div class="ctgm__icon-field ctgm__basic-icon">
+                    <span>{{localize "CRAFTINGTABLE.GM.Icon"}}</span>
+                    <img src="{{selectedRecipe.img}}" alt="" data-live="img" />
+                    <button type="button" data-action="choose-icon" title="{{localize "CRAFTINGTABLE.GM.ChooseIcon"}}" aria-label="{{localize "CRAFTINGTABLE.GM.ChooseIcon"}}" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-upload"></i></button>
+                    <button type="button" data-action="clear-icon" class="is-danger" title="{{localize "CRAFTINGTABLE.GM.ClearIcon"}}" aria-label="{{localize "CRAFTINGTABLE.GM.ClearIcon"}}" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-trash"></i></button>
+                    <input type="text" name="recipe.img" value="{{selectedRecipe.img}}" {{#unless selectedRecipe.editable}}readonly{{/unless}} />
+                  </div>
+                  <label class="ctgm__wide ctgm__basic-description">
+                    {{localize "CRAFTINGTABLE.GM.Description"}}
+                    <textarea name="recipe.description" {{#unless selectedRecipe.editable}}readonly{{/unless}}>{{selectedRecipe.description}}</textarea>
+                  </label>
+                  </div>
+                </div>
+              </section>
+
+              <section class="ctgm__collapse {{#if isRequirementsOpen}}is-open{{/if}}" data-collapse-section="requirements">
+                <button type="button" class="ctgm__collapse-header" data-collapse-toggle="requirements" aria-controls="ctgm-section-requirements" aria-expanded="{{#if isRequirementsOpen}}true{{else}}false{{/if}}">
+                  <span><i class="fas fa-hammer"></i> {{localize "CRAFTINGTABLE.GM.Requirements"}}</span>
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="ctgm__collapse-body" id="ctgm-section-requirements" {{#unless isRequirementsOpen}}hidden{{/unless}}>
+                  <div class="ctgm__form-grid ctgm__requirements-grid">
+                    <label class="ctgm__drop-input ctgm__requirement-tool" data-drop-zone="tool">
+                      {{localize "CRAFTINGTABLE.GM.ToolRequired"}}
+                      <select name="recipe.toolChoice" data-tool-choice {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                        {{#each selectedRecipe.toolOptions}}
+                          <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                        {{/each}}
+                      </select>
+                      <input type="text" name="recipe.customToolName" class="ctgm__custom-tool-name {{#unless selectedRecipe.isCustomTool}}is-hidden{{/unless}}" value="{{selectedRecipe.toolNameInput}}" placeholder="{{localize "CRAFTINGTABLE.GM.CustomToolName"}}" {{#unless selectedRecipe.editable}}readonly{{/unless}} />
+                      <input type="hidden" name="recipe.toolName" value="{{selectedRecipe.toolNameInput}}" />
+                      <input type="text" name="recipe.toolUuid" value="{{selectedRecipe.toolUuid}}" placeholder="{{localize "CRAFTINGTABLE.GM.ToolUuid"}}" data-advanced-field {{#unless selectedRecipe.editable}}readonly{{/unless}} />
+                      <button type="button" class="ctgm__select-item" data-action="select-item" data-select-zone="tool" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-list" aria-hidden="true"></i> {{localize "CRAFTINGTABLE.GM.SelectItem"}}</button>
+                    </label>
+                    <label class="ctgm__requirement-ability">
+                      {{localize "CRAFTINGTABLE.GM.Ability"}}
+                      <select name="recipe.ability" {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                        {{#each selectedRecipe.abilityOptions}}
+                          <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                        {{/each}}
+                      </select>
+                    </label>
+                    <label class="ctgm__requirement-dc">
+                      {{localize "CRAFTINGTABLE.GM.DC"}}
+                      <input type="number" name="recipe.dc" value="{{selectedRecipe.dc}}" min="0" step="1" required {{#unless selectedRecipe.editable}}readonly{{/unless}} />
+                    </label>
+                    <label class="ctgm__switch-line ctgm__requirement-proficiency">
+                      <span>{{localize "CRAFTINGTABLE.GM.ProficiencyRequired"}}</span>
+                      <span class="ctgm__switch">
+                        <input type="checkbox" name="recipe.proficiencyRequired" aria-label="{{localize "CRAFTINGTABLE.GM.ProficiencyRequired"}}" {{#if selectedRecipe.proficiencyRequired}}checked{{/if}} {{#unless selectedRecipe.editable}}disabled{{/unless}} />
+                        <span></span>
+                      </span>
+                    </label>
+                    <label class="ctgm__requirement-time">
+                      {{localize "CRAFTINGTABLE.GM.CraftingTime"}}
+                      <span class="ctgm__inline-fields">
+                        <input type="number" name="recipe.timeValue" value="{{selectedRecipe.timeValue}}" min="1" step="1" required {{#unless selectedRecipe.editable}}readonly{{/unless}} />
+                        <select name="recipe.timeUnit" {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                          {{#each selectedRecipe.timeUnitOptions}}
+                            <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                          {{/each}}
+                        </select>
+                      </span>
+                    </label>
+                    <label class="ctgm__requirement-cost">
+                      {{localize "CRAFTINGTABLE.GM.GoldCost"}}
+                      <span class="ctgm__inline-fields">
+                        <input type="number" name="recipe.costGp" value="{{selectedRecipe.costGp}}" min="0" step="1" required {{#unless selectedRecipe.editable}}readonly{{/unless}} />
+                        <select name="recipe.costDenomination" {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                          {{#each selectedRecipe.denominationOptions}}
+                            <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                          {{/each}}
+                        </select>
+                      </span>
+                    </label>
+                    <label class="ctgm__requirement-mode">
+                      {{localize "CRAFTINGTABLE.GM.DefaultMode"}}
+                      <select name="recipe.defaultMode" {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                        {{#each selectedRecipe.modeOptions}}
+                          <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                        {{/each}}
+                      </select>
+                    </label>
+                  </div>
+                </div>
+              </section>
+
+              <section class="ctgm__collapse {{#if isIngredientsOpen}}is-open{{/if}}" data-collapse-section="ingredients">
+                <button type="button" class="ctgm__collapse-header" data-collapse-toggle="ingredients" aria-controls="ctgm-section-ingredients" aria-expanded="{{#if isIngredientsOpen}}true{{else}}false{{/if}}">
+                  <span><i class="fas fa-leaf"></i> {{localize "CRAFTINGTABLE.GM.Ingredients"}}</span>
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="ctgm__collapse-body" id="ctgm-section-ingredients" {{#unless isIngredientsOpen}}hidden{{/unless}}>
+                  <header class="ctgm__section-header">
+                    <h3>{{localize "CRAFTINGTABLE.GM.Ingredients"}}</h3>
+                    <div class="ctgm__inline-actions">
+                      <button type="button" data-action="add-ingredient-row" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-plus"></i> {{localize "CRAFTINGTABLE.GM.AddIngredient"}}</button>
+                      <button type="button" data-action="add-optional-row" {{#unless selectedRecipe.editable}}disabled{{/unless}}>{{localize "CRAFTINGTABLE.GM.AddOptional"}}</button>
+                    </div>
+                  </header>
+                  <div class="ctgm__ingredient-editor" data-ingredient-list>
+                    {{#each selectedRecipe.ingredients}}
+                      {{> ctIngredientRow editable=../selectedRecipe.editable}}
+                    {{else}}
+                      <p class="ctgm__empty" data-empty-ingredients>{{localize "CRAFTINGTABLE.GM.NoIngredients"}}</p>
+                    {{/each}}
+                  </div>
+                  <div class="ctgm__drop-zone" data-drop-zone="ingredient" data-ingredient-type="required" aria-label="{{localize "CRAFTINGTABLE.GM.DropIngredients"}}">
+                    <span>{{localize "CRAFTINGTABLE.GM.DropIngredients"}}</span>
+                    <button type="button" class="ctgm__select-item" data-action="select-item" data-select-zone="ingredient" data-ingredient-type="required" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-list" aria-hidden="true"></i> {{localize "CRAFTINGTABLE.GM.SelectItem"}}</button>
+                  </div>
+                </div>
+              </section>
+
+              <section class="ctgm__collapse {{#if isResultOpen}}is-open{{/if}}" data-collapse-section="result">
+                <button type="button" class="ctgm__collapse-header" data-collapse-toggle="result" aria-controls="ctgm-section-result" aria-expanded="{{#if isResultOpen}}true{{else}}false{{/if}}">
+                  <span><i class="fas fa-flask"></i> {{localize "CRAFTINGTABLE.GM.Result"}}</span>
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="ctgm__collapse-body" id="ctgm-section-result" {{#unless isResultOpen}}hidden{{/unless}}>
+                  <header class="ctgm__section-header">
+                    <h3>{{localize "CRAFTINGTABLE.GM.Result"}}</h3>
+                    <div class="ctgm__inline-actions">
+                      <button type="button" data-action="add-result-row" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-plus"></i> {{localize "CRAFTINGTABLE.GM.AddResult"}}</button>
+                      <button type="button" data-action="clear-result" {{#unless selectedRecipe.editable}}disabled{{/unless}}>{{localize "CRAFTINGTABLE.GM.Clear"}}</button>
+                    </div>
+                  </header>
+                  <div class="ctgm__result-list" data-result-list>
+                    {{#each selectedRecipe.results}}
+                      {{> ctResultRow editable=../selectedRecipe.editable}}
+                    {{else}}
+                      <p class="ctgm__empty" data-empty-results>{{localize "CRAFTINGTABLE.GM.NoResult"}}</p>
+                    {{/each}}
+                  </div>
+                  <div class="ctgm__drop-zone" data-drop-zone="result">
+                    <span>{{localize "CRAFTINGTABLE.GM.DropResults"}}</span>
+                    <button type="button" class="ctgm__select-item" data-action="select-item" data-select-zone="result" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-list" aria-hidden="true"></i> {{localize "CRAFTINGTABLE.GM.SelectItem"}}</button>
+                  </div>
+                </div>
+              </section>
+
+              <section class="ctgm__collapse {{#if isRulesOpen}}is-open{{/if}}" data-collapse-section="rules">
+                <button type="button" class="ctgm__collapse-header" data-collapse-toggle="rules" aria-controls="ctgm-section-rules" aria-expanded="{{#if isRulesOpen}}true{{else}}false{{/if}}">
+                  <span><i class="fas fa-skull-crossbones"></i> {{localize "CRAFTINGTABLE.GM.RulesOutcomes"}}</span>
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="ctgm__collapse-body ctgm__outcomes" id="ctgm-section-rules" data-outcomes-editor {{#unless isRulesOpen}}hidden{{/unless}}>
+                  <header class="ctgm__outcomes-intro">
+                    <p>{{localize "CRAFTINGTABLE.GM.RulesIntro"}}</p>
+                    <button type="button" data-action="preview-outcomes"><i class="fas fa-eye"></i> {{localize "CRAFTINGTABLE.GM.PreviewOutcomes"}}</button>
+                  </header>
+
+                  <section class="ctgm__outcome-section {{#if isOutcomeFailureOpen}}is-open{{/if}}" data-collapse-section="outcomeFailure" data-outcome-panel="failure">
+                    <header class="ctgm__outcome-header">
+                      <div class="ctgm__outcome-titleblock">
+                        <span class="ctgm__outcome-headline">
+                          <span class="ctgm__outcome-title"><i class="fas fa-skull-crossbones"></i> {{localize "CRAFTINGTABLE.GM.Failure"}}</span>
+                          <span class="ctgm__outcome-chip {{selectedRecipe.outcomes.failure.severityClass}}" data-outcome-chip="failure" data-outcome-live="failureChip">
+                            {{selectedRecipe.outcomes.failure.chipLabel}}
+                          </span>
+                        </span>
+                        <small data-outcome-live="failureSummary">{{selectedRecipe.outcomes.failure.summary}}</small>
+                      </div>
+                      <div class="ctgm__outcome-actions">
+                        <button type="button" class="ctgm__outcome-collapse" data-collapse-toggle="outcomeFailure" aria-label="{{localize "CRAFTINGTABLE.GM.ToggleFailure"}}" aria-controls="ctgm-outcome-failure" aria-expanded="{{#if isOutcomeFailureOpen}}true{{else}}false{{/if}}">
+                          <i class="fas fa-chevron-right"></i>
+                        </button>
+                      </div>
+                    </header>
+                    <div class="ctgm__outcome-body" id="ctgm-outcome-failure" {{#unless isOutcomeFailureOpen}}hidden{{/unless}}>
+                      <div class="ctgm__outcome-grid ctgm__outcome-grid--failure">
+                        <label class="ctgm__failure-rule-field">
+                          <span>{{localize "CRAFTINGTABLE.GM.FailureRule"}} <i class="fas fa-info-circle ctgm__help" role="img" tabindex="0" title="{{localize "CRAFTINGTABLE.GM.FailureRuleHint"}}" aria-label="{{localize "CRAFTINGTABLE.GM.FailureRuleHint"}}"></i></span>
+                          <span class="ctgm__select-with-icon">
+                            <i data-outcome-icon="failureRule" class="{{selectedRecipe.outcomes.failure.iconClass}}"></i>
+                            <select name="outcomes.failure.type" {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                              {{#each selectedRecipe.outcomes.failure.typeOptions}}
+                                <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                              {{/each}}
+                            </select>
+                          </span>
+                        </label>
+                        <label class="ctgm__wide" data-custom-macro-field="failure" {{#unless selectedRecipe.outcomes.failure.isCustomMacro}}hidden{{/unless}}>
+                          <span>{{localize "CRAFTINGTABLE.GM.CustomMacro"}} <i class="fas fa-info-circle ctgm__help" role="img" tabindex="0" title="{{localize "CRAFTINGTABLE.GM.CustomMacroHint"}}" aria-label="{{localize "CRAFTINGTABLE.GM.CustomMacroHint"}}"></i></span>
+                          <select name="outcomes.failure.macroUuid" {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                            {{#each selectedRecipe.outcomes.failure.macroOptions}}
+                              <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                            {{/each}}
+                          </select>
+                          <small>{{localize "CRAFTINGTABLE.GM.MacroContext"}}</small>
+                        </label>
+                        <div class="ctgm__outcome-list-wrap ctgm__failure-results {{#unless selectedRecipe.outcomes.failure.canCreateResults}}is-disabled{{/unless}}" data-failure-results>
+                          <header>
+                            <span>{{localize "CRAFTINGTABLE.GM.FailureResults"}} <i class="fas fa-info-circle ctgm__help" role="img" tabindex="0" title="{{localize "CRAFTINGTABLE.GM.FailureResultsHint"}}" aria-label="{{localize "CRAFTINGTABLE.GM.FailureResultsHint"}}"></i></span>
+                            <button type="button" data-action="add-outcome-result" data-result-scope="failure" {{#unless selectedRecipe.editable}}disabled{{/unless}} {{#unless selectedRecipe.outcomes.failure.canCreateResults}}disabled{{/unless}}><i class="fas fa-plus"></i> {{localize "CRAFTINGTABLE.GM.AddFailureResult"}}</button>
+                          </header>
+                          <p class="ctgm__inactive-note">{{localize "CRAFTINGTABLE.GM.ChooseFailureItem"}}</p>
+                          <div class="ctgm__outcome-results" data-outcome-results="failure">
+                            {{#each selectedRecipe.outcomes.failure.results}}
+                              {{> ctOutcomeResultRow editable=../selectedRecipe.editable canCreateResults=../selectedRecipe.outcomes.failure.canCreateResults}}
+                            {{else}}
+                              <div class="ctgm__empty-card" data-empty-outcome-results>
+                                <i class="fas fa-box-open"></i>
+                                <strong>{{localize "CRAFTINGTABLE.GM.FailureItemsOptional"}}</strong>
+                                <span>{{localize "CRAFTINGTABLE.GM.DropFailureHelp"}}</span>
+                              </div>
+                            {{/each}}
+                          </div>
+                          <div class="ctgm__drop-zone" data-drop-zone="outcome-result" data-result-scope="failure" aria-disabled="{{#if selectedRecipe.outcomes.failure.canCreateResults}}false{{else}}true{{/if}}">
+                            <i class="fas fa-box-open"></i>
+                            <span>{{localize "CRAFTINGTABLE.GM.DropFailureResults"}}</span>
+                            <button type="button" class="ctgm__select-item" data-action="select-item" data-select-zone="outcome-result" data-result-scope="failure" {{#unless selectedRecipe.editable}}disabled{{/unless}} {{#unless selectedRecipe.outcomes.failure.canCreateResults}}disabled{{/unless}}><i class="fas fa-list" aria-hidden="true"></i> {{localize "CRAFTINGTABLE.GM.SelectItem"}}</button>
+                          </div>
+                        </div>
+                        <label class="ctgm__flavor-field ctgm__wide">
+                          <span>{{localize "CRAFTINGTABLE.GM.FlavorFailure"}} <i class="fas fa-info-circle ctgm__help" role="img" tabindex="0" title="{{localize "CRAFTINGTABLE.GM.FlavorFailureHint"}}" aria-label="{{localize "CRAFTINGTABLE.GM.FlavorFailureHint"}}"></i></span>
+                          <textarea name="outcomes.failure.flavorText" placeholder="{{localize "CRAFTINGTABLE.GM.FlavorFailurePlaceholder"}}" {{#unless selectedRecipe.editable}}readonly{{/unless}}>{{selectedRecipe.outcomes.failure.flavorText}}</textarea>
+                        </label>
+                      </div>
+                      <p class="ctgm__outcome-info {{selectedRecipe.outcomes.failure.severityClass}}" data-outcome-info="failure"><i class="fas fa-info-circle"></i> <span data-outcome-live="failureInfo">{{selectedRecipe.outcomes.failure.infoText}}</span></p>
+                    </div>
+                  </section>
+
+                  <section class="ctgm__outcome-section {{#unless selectedRecipe.outcomes.partialSuccess.enabled}}is-disabled{{/unless}} {{#if isOutcomePartialOpen}}is-open{{/if}}" data-collapse-section="outcomePartialSuccess" data-outcome-panel="partialSuccess">
+                    <header class="ctgm__outcome-header">
+                      <div class="ctgm__outcome-titleblock">
+                        <span class="ctgm__outcome-headline">
+                          <span class="ctgm__outcome-title"><i class="fas fa-crosshairs"></i> {{localize "CRAFTINGTABLE.GM.PartialSuccess"}}</span>
+                          <span class="ctgm__outcome-chipset" data-outcome-chip-list="partialSuccess">
+                            {{#each selectedRecipe.outcomes.partialSuccess.chips}}
+                              <span class="ctgm__outcome-chip {{tone}}"><i class="{{iconClass}}"></i> {{label}}</span>
+                            {{/each}}
+                          </span>
+                        </span>
+                        <small data-outcome-live="partialSummary">{{selectedRecipe.outcomes.partialSuccess.summary}}</small>
+                      </div>
+                      <div class="ctgm__outcome-actions">
+                        <label class="ctgm__switch ctgm__outcome-toggle">
+                          <input type="checkbox" name="outcomes.partialSuccess.enabled" aria-label="{{localize "CRAFTINGTABLE.GM.EnablePartial"}}" title="{{localize "CRAFTINGTABLE.GM.EnablePartial"}}" {{#if selectedRecipe.outcomes.partialSuccess.enabled}}checked{{/if}} {{#unless selectedRecipe.editable}}disabled{{/unless}} />
+                          <span></span>
+                        </label>
+                        <button type="button" class="ctgm__outcome-collapse" data-collapse-toggle="outcomePartialSuccess" aria-label="{{localize "CRAFTINGTABLE.GM.TogglePartial"}}" aria-controls="ctgm-outcome-partial" aria-expanded="{{#if isOutcomePartialOpen}}true{{else}}false{{/if}}">
+                          <i class="fas fa-chevron-right"></i>
+                        </button>
+                      </div>
+                    </header>
+                    <div class="ctgm__outcome-body" id="ctgm-outcome-partial" {{#unless isOutcomePartialOpen}}hidden{{/unless}}>
+                      <div class="ctgm__outcome-grid ctgm__outcome-grid--partial">
+                        <label>
+                          {{localize "CRAFTINGTABLE.GM.MissDcBy"}}
+                          <input type="number" name="outcomes.partialSuccess.missBy" value="{{selectedRecipe.outcomes.partialSuccess.missBy}}" min="1" step="1" {{#unless selectedRecipe.editable}}readonly{{/unless}} />
+                          <small>{{localize "CRAFTINGTABLE.GM.MissDcHint"}}</small>
+                        </label>
+                        <label class="ctgm__compact-select">
+                          {{localize "CRAFTINGTABLE.GM.Effect"}}
+                          <span class="ctgm__select-with-icon">
+                            <i class="{{selectedRecipe.outcomes.partialSuccess.effectIconClass}}"></i>
+                            <select name="outcomes.partialSuccess.effect.type" {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                              {{#each selectedRecipe.outcomes.partialSuccess.effectOptions}}
+                                <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                              {{/each}}
+                            </select>
+                          </span>
+                          <small>{{localize "CRAFTINGTABLE.GM.PrimaryPartialHint"}}</small>
+                        </label>
+                        <label data-quality-tier-field {{#unless selectedRecipe.outcomes.partialSuccess.isReducedQuality}}hidden{{/unless}}>
+                          {{localize "CRAFTINGTABLE.GM.QualityTier"}}
+                          <select name="outcomes.partialSuccess.effect.qualityTier" {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                            {{#each selectedRecipe.outcomes.partialSuccess.qualityTierOptions}}
+                              <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                            {{/each}}
+                          </select>
+                          <small>{{localize "CRAFTINGTABLE.GM.QualityHint"}}</small>
+                        </label>
+                        <div class="ctgm__outcome-example is-compact">
+                          <strong>{{localize "CRAFTINGTABLE.GM.Example"}}</strong>
+                          <span data-outcome-live="partialExample">{{selectedRecipe.outcomes.partialSuccess.exampleText}}</span>
+                        </div>
+                      </div>
+                      <details class="ctgm__nested-details" {{#if selectedRecipe.outcomes.partialSuccess.hasAdditionalEffects}}open{{/if}}>
+                        <summary>
+                          <span>{{localize "CRAFTINGTABLE.GM.AdditionalEffects"}} ({{selectedRecipe.outcomes.partialSuccess.additionalEffectCount}})</span>
+                          <button type="button" data-action="add-outcome-effect" data-effect-scope="partialSuccess" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-plus"></i> {{localize "CRAFTINGTABLE.GM.AddEffect"}}</button>
+                        </summary>
+                        <div class="ctgm__outcome-list-wrap">
+                        <div class="ctgm__outcome-effects-list" data-outcome-effects="partialSuccess">
+                          {{#each selectedRecipe.outcomes.partialSuccess.additionalEffects}}
+                            {{> ctOutcomeEffectRow editable=../selectedRecipe.editable isPartial=true}}
+                          {{else}}
+                            <div class="ctgm__empty-card is-guidance" data-empty-outcome-effects>
+                              <i class="fas fa-layer-group"></i>
+                              <strong>{{localize "CRAFTINGTABLE.GM.AdditionalOptional"}}</strong>
+                              <span>{{localize "CRAFTINGTABLE.GM.AdditionalHelp"}}</span>
+                            </div>
+                          {{/each}}
+                        </div>
+                        </div>
+                      </details>
+                    </div>
+                  </section>
+
+                  <section class="ctgm__outcome-section {{#unless selectedRecipe.outcomes.criticalSuccess.enabled}}is-disabled{{/unless}} {{#if isOutcomeCriticalSuccessOpen}}is-open{{/if}}" data-collapse-section="outcomeCriticalSuccess" data-outcome-panel="criticalSuccess">
+                    <header class="ctgm__outcome-header">
+                      <div class="ctgm__outcome-titleblock">
+                        <span class="ctgm__outcome-headline">
+                          <span class="ctgm__outcome-title"><i class="fas fa-star"></i> {{localize "CRAFTINGTABLE.GM.CriticalSuccess"}}</span>
+                          <span class="ctgm__outcome-chipset" data-outcome-chip-list="criticalSuccess">
+                            {{#each selectedRecipe.outcomes.criticalSuccess.chips}}
+                              <span class="ctgm__outcome-chip {{tone}}"><i class="{{iconClass}}"></i> {{label}}</span>
+                            {{/each}}
+                          </span>
+                        </span>
+                        <small data-outcome-live="criticalSuccessSummary">{{selectedRecipe.outcomes.criticalSuccess.summary}}</small>
+                      </div>
+                      <div class="ctgm__outcome-actions">
+                        <label class="ctgm__switch ctgm__outcome-toggle">
+                          <input type="checkbox" name="outcomes.criticalSuccess.enabled" aria-label="{{localize "CRAFTINGTABLE.GM.EnableCriticalSuccess"}}" title="{{localize "CRAFTINGTABLE.GM.EnableCriticalSuccess"}}" {{#if selectedRecipe.outcomes.criticalSuccess.enabled}}checked{{/if}} {{#unless selectedRecipe.editable}}disabled{{/unless}} />
+                          <span></span>
+                        </label>
+                        <button type="button" class="ctgm__outcome-collapse" data-collapse-toggle="outcomeCriticalSuccess" aria-label="{{localize "CRAFTINGTABLE.GM.ToggleCriticalSuccess"}}" aria-controls="ctgm-outcome-critical-success" aria-expanded="{{#if isOutcomeCriticalSuccessOpen}}true{{else}}false{{/if}}">
+                          <i class="fas fa-chevron-right"></i>
+                        </button>
+                      </div>
+                    </header>
+                    <div class="ctgm__outcome-body" id="ctgm-outcome-critical-success" {{#unless isOutcomeCriticalSuccessOpen}}hidden{{/unless}}>
+                      <div class="ctgm__outcome-grid ctgm__outcome-grid--critical">
+                        <label class="ctgm__compact-select">
+                          {{localize "CRAFTINGTABLE.GM.On"}}
+                          <span class="ctgm__select-with-icon">
+                            <i class="{{selectedRecipe.outcomes.criticalSuccess.triggerIconClass}}"></i>
+                            <select name="outcomes.criticalSuccess.trigger.type" {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                              {{#each selectedRecipe.outcomes.criticalSuccess.triggerOptions}}
+                                <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                              {{/each}}
+                            </select>
+                          </span>
+                          <small>{{localize "CRAFTINGTABLE.GM.CriticalSuccessWhen"}}</small>
+                        </label>
+                        <label class="ctgm__compact-select" data-custom-trigger-field="criticalSuccess" {{#unless selectedRecipe.outcomes.criticalSuccess.isCustomTrigger}}hidden{{/unless}}>
+                          {{localize "CRAFTINGTABLE.GM.MinimumTotal"}}
+                          <input type="number" name="outcomes.criticalSuccess.trigger.threshold" value="{{selectedRecipe.outcomes.criticalSuccess.trigger.threshold}}" step="1" {{#unless selectedRecipe.editable}}readonly{{/unless}} />
+                          <small>{{localize "CRAFTINGTABLE.GM.MinimumTotalHint"}}</small>
+                        </label>
+                        <div class="ctgm__outcome-example is-compact is-good">
+                          <strong>{{localize "CRAFTINGTABLE.GM.Example"}}</strong>
+                          <span data-outcome-live="criticalSuccessExample">{{selectedRecipe.outcomes.criticalSuccess.exampleText}}</span>
+                        </div>
+                        <details class="ctgm__nested-details ctgm__outcome-effects" {{#if selectedRecipe.outcomes.criticalSuccess.hasEffects}}open{{/if}}>
+                          <summary>
+                            <span>{{localize "CRAFTINGTABLE.GM.Effects"}} ({{selectedRecipe.outcomes.criticalSuccess.effectCount}})</span>
+                            <button type="button" data-action="add-outcome-effect" data-effect-scope="criticalSuccess" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-plus"></i> {{localize "CRAFTINGTABLE.GM.AddEffect"}}</button>
+                          </summary>
+                          <div class="ctgm__outcome-effects-list" data-outcome-effects="criticalSuccess">
+                          {{#each selectedRecipe.outcomes.criticalSuccess.effects}}
+                            {{> ctOutcomeEffectRow editable=../selectedRecipe.editable isPartial=false}}
+                          {{else}}
+                            <div class="ctgm__empty-card is-guidance" data-empty-outcome-effects>
+                              <i class="fas fa-star"></i>
+                              <strong>{{localize "CRAFTINGTABLE.GM.AddEffectsLike"}}</strong>
+                              <span>Double Output, Bonus Item, Reduce Time, No {{localize "CRAFTINGTABLE.GM.GoldCost"}}.</span>
+                            </div>
+                          {{/each}}
+                          </div>
+                        </details>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="ctgm__outcome-section {{#unless selectedRecipe.outcomes.criticalFailure.enabled}}is-disabled{{/unless}} {{#if isOutcomeCriticalFailureOpen}}is-open{{/if}}" data-collapse-section="outcomeCriticalFailure" data-outcome-panel="criticalFailure">
+                    <header class="ctgm__outcome-header">
+                      <div class="ctgm__outcome-titleblock">
+                        <span class="ctgm__outcome-headline">
+                          <span class="ctgm__outcome-title"><i class="fas fa-fire"></i> {{localize "CRAFTINGTABLE.GM.CriticalFailure"}}</span>
+                          <span class="ctgm__outcome-chipset" data-outcome-chip-list="criticalFailure">
+                            {{#each selectedRecipe.outcomes.criticalFailure.chips}}
+                              <span class="ctgm__outcome-chip {{tone}}"><i class="{{iconClass}}"></i> {{label}}</span>
+                            {{/each}}
+                          </span>
+                        </span>
+                        <small data-outcome-live="criticalFailureSummary">{{selectedRecipe.outcomes.criticalFailure.summary}}</small>
+                      </div>
+                      <div class="ctgm__outcome-actions">
+                        <label class="ctgm__switch ctgm__outcome-toggle">
+                          <input type="checkbox" name="outcomes.criticalFailure.enabled" aria-label="{{localize "CRAFTINGTABLE.GM.EnableCriticalFailure"}}" title="{{localize "CRAFTINGTABLE.GM.EnableCriticalFailure"}}" {{#if selectedRecipe.outcomes.criticalFailure.enabled}}checked{{/if}} {{#unless selectedRecipe.editable}}disabled{{/unless}} />
+                          <span></span>
+                        </label>
+                        <button type="button" class="ctgm__outcome-collapse" data-collapse-toggle="outcomeCriticalFailure" aria-label="{{localize "CRAFTINGTABLE.GM.ToggleCriticalFailure"}}" aria-controls="ctgm-outcome-critical-failure" aria-expanded="{{#if isOutcomeCriticalFailureOpen}}true{{else}}false{{/if}}">
+                          <i class="fas fa-chevron-right"></i>
+                        </button>
+                      </div>
+                    </header>
+                    <div class="ctgm__outcome-body" id="ctgm-outcome-critical-failure" {{#unless isOutcomeCriticalFailureOpen}}hidden{{/unless}}>
+                      <div class="ctgm__outcome-grid ctgm__outcome-grid--critical-failure">
+                        <label class="ctgm__compact-select">
+                          {{localize "CRAFTINGTABLE.GM.On"}}
+                          <span class="ctgm__select-with-icon">
+                            <i class="{{selectedRecipe.outcomes.criticalFailure.triggerIconClass}}"></i>
+                            <select name="outcomes.criticalFailure.trigger.type" {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                              {{#each selectedRecipe.outcomes.criticalFailure.triggerOptions}}
+                                <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                              {{/each}}
+                            </select>
+                          </span>
+                        </label>
+                        <label class="ctgm__compact-select" data-custom-trigger-field="criticalFailure" {{#unless selectedRecipe.outcomes.criticalFailure.isCustomTrigger}}hidden{{/unless}}>
+                          {{localize "CRAFTINGTABLE.GM.MaximumTotal"}}
+                          <input type="number" name="outcomes.criticalFailure.trigger.threshold" value="{{selectedRecipe.outcomes.criticalFailure.trigger.threshold}}" step="1" {{#unless selectedRecipe.editable}}readonly{{/unless}} />
+                          <small>{{localize "CRAFTINGTABLE.GM.MaximumTotalHint"}}</small>
+                        </label>
+                        <label class="ctgm__compact-select">
+                          {{localize "CRAFTINGTABLE.GM.Effect"}}
+                          <span class="ctgm__select-with-icon">
+                            <i class="{{selectedRecipe.outcomes.criticalFailure.effectIconClass}}"></i>
+                            <select name="outcomes.criticalFailure.effect.type" {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                              {{#each selectedRecipe.outcomes.criticalFailure.effectOptions}}
+                                <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                              {{/each}}
+                            </select>
+                          </span>
+                        </label>
+                        <label class="ctgm__wide" data-custom-macro-field="criticalFailure" {{#unless selectedRecipe.outcomes.criticalFailure.isCustomMacro}}hidden{{/unless}}>
+                          <span>{{localize "CRAFTINGTABLE.GM.CustomMacro"}} <i class="fas fa-info-circle ctgm__help" role="img" tabindex="0" title="{{localize "CRAFTINGTABLE.GM.CustomMacroHint"}}" aria-label="{{localize "CRAFTINGTABLE.GM.CustomMacroHint"}}"></i></span>
+                          <select name="outcomes.criticalFailure.effect.macroUuid" {{#unless selectedRecipe.editable}}disabled{{/unless}}>
+                            {{#each selectedRecipe.outcomes.criticalFailure.macroOptions}}
+                              <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                            {{/each}}
+                          </select>
+                          <small>{{localize "CRAFTINGTABLE.GM.CancelMacroHint"}}</small>
+                        </label>
+                        <details class="ctgm__nested-details ctgm__outcome-list-wrap" {{#if selectedRecipe.outcomes.criticalFailure.hasResults}}open{{/if}}>
+                          <summary>
+                            <span>{{localize "CRAFTINGTABLE.GM.FailureResults"}} ({{selectedRecipe.outcomes.criticalFailure.resultCount}})</span>
+                            <button type="button" data-action="add-outcome-result" data-result-scope="criticalFailure" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-plus"></i> {{localize "CRAFTINGTABLE.GM.AddItem"}}</button>
+                          </summary>
+                          <div class="ctgm__outcome-results" data-outcome-results="criticalFailure">
+                            {{#each selectedRecipe.outcomes.criticalFailure.results}}
+                              {{> ctOutcomeResultRow editable=../selectedRecipe.editable canCreateResults=true}}
+                          {{else}}
+                              <div class="ctgm__empty-card is-guidance" data-empty-outcome-results>
+                                <i class="fas fa-fire"></i>
+                                <strong>{{localize "CRAFTINGTABLE.GM.AddConsequences"}}</strong>
+                                <span>{{localize "CRAFTINGTABLE.GM.ConsequenceExamples"}}</span>
+                              </div>
+                          {{/each}}
+                          </div>
+                          <div class="ctgm__drop-zone" data-drop-zone="outcome-result" data-result-scope="criticalFailure">
+                            <span>{{localize "CRAFTINGTABLE.GM.DropCriticalFailure"}}</span>
+                            <button type="button" class="ctgm__select-item" data-action="select-item" data-select-zone="outcome-result" data-result-scope="criticalFailure" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-list" aria-hidden="true"></i> {{localize "CRAFTINGTABLE.GM.SelectItem"}}</button>
+                          </div>
+                        </details>
+                        <div class="ctgm__outcome-example is-compact is-bad">
+                          <strong>{{localize "CRAFTINGTABLE.GM.Example"}}</strong>
+                          <span data-outcome-live="criticalFailureExample">{{selectedRecipe.outcomes.criticalFailure.exampleText}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  <div class="ctgm__outcome-order">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>{{localize "CRAFTINGTABLE.GM.OutcomeFlow"}}</strong>
+                    <span class="ctgm__flow-step {{#if selectedRecipe.outcomes.criticalSuccess.enabled}}is-active{{/if}}">{{localize "CRAFTINGTABLE.GM.CriticalSuccess"}}</span>
+                    <span class="ctgm__flow-step is-active">{{localize "CRAFTINGTABLE.GM.Success"}}</span>
+                    <span class="ctgm__flow-step {{#if selectedRecipe.outcomes.partialSuccess.enabled}}is-active{{/if}}">{{localize "CRAFTINGTABLE.GM.PartialSuccess"}}</span>
+                    <span class="ctgm__flow-step is-active">{{localize "CRAFTINGTABLE.GM.Failure"}}</span>
+                    <span class="ctgm__flow-step {{#if selectedRecipe.outcomes.criticalFailure.enabled}}is-active{{/if}}">{{localize "CRAFTINGTABLE.GM.CriticalFailure"}}</span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="ctgm__collapse {{#if isPermissionsOpen}}is-open{{/if}}" data-collapse-section="permissions">
+                <button type="button" class="ctgm__collapse-header" data-collapse-toggle="permissions" aria-controls="ctgm-section-permissions" aria-expanded="{{#if isPermissionsOpen}}true{{else}}false{{/if}}">
+                  <span><i class="fas fa-eye"></i> {{localize "CRAFTINGTABLE.GM.Permissions"}}</span>
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="ctgm__collapse-body" id="ctgm-section-permissions" {{#unless isPermissionsOpen}}hidden{{/unless}}>
+                  <div class="ctgm__form-grid">
+                  <label>
+                    {{localize "CRAFTINGTABLE.GM.Visibility"}}
+                    <select name="permissions.visibility">
+                      {{#each selectedRecipe.permissions.visibilityOptions}}
+                        <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                      {{/each}}
+                    </select>
+                  </label>
+                  <label>
+                    {{localize "CRAFTINGTABLE.GM.KnowledgeSource"}}
+                    <select name="permissions.knowledgeSource">
+                      {{#each selectedRecipe.permissions.knowledgeSourceOptions}}
+                        <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                      {{/each}}
+                    </select>
+                  </label>
+                  <label>
+                    {{localize "CRAFTINGTABLE.GM.CraftPermission"}}
+                    <select name="permissions.craftPermission">
+                      {{#each selectedRecipe.permissions.craftPermissionOptions}}
+                        <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                      {{/each}}
+                    </select>
+                  </label>
+                  </div>
+                </div>
+              </section>
+
+              <section class="ctgm__collapse {{#if isNotesOpen}}is-open{{/if}}" data-collapse-section="notes">
+                <button type="button" class="ctgm__collapse-header" data-collapse-toggle="notes" aria-controls="ctgm-section-notes" aria-expanded="{{#if isNotesOpen}}true{{else}}false{{/if}}">
+                  <span><i class="fas fa-feather-alt"></i> {{localize "CRAFTINGTABLE.GM.Notes"}}</span>
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="ctgm__collapse-body ctgm__split" id="ctgm-section-notes" {{#unless isNotesOpen}}hidden{{/unless}}>
+                  <label>
+                    {{localize "CRAFTINGTABLE.GM.PlayerNotes"}}
+                    <textarea name="notes.player">{{selectedRecipe.notes.player}}</textarea>
+                  </label>
+                  <label>
+                    {{localize "CRAFTINGTABLE.GM.GmNotes"}}
+                    <textarea name="notes.gm">{{selectedRecipe.notes.gm}}</textarea>
+                  </label>
+                </div>
+              </section>
+            </section>
+
+            <footer class="ctgm__footer">
+              <label class="ctgm__advanced-toggle ctgm__switch-line">
+                <span>{{localize "CRAFTINGTABLE.GM.AdvancedMode"}}</span>
+                <span class="ctgm__switch">
+                  <input type="checkbox" name="advancedMode" aria-label="{{localize "CRAFTINGTABLE.GM.AdvancedMode"}}" {{#if advancedMode}}checked{{/if}} />
+                  <span></span>
+                </span>
+              </label>
+              <span class="ctgm__dirty-note" data-unsaved-indicator {{#unless hasUnsavedChanges}}hidden{{/unless}}>{{localize "CRAFTINGTABLE.GM.UnsavedKept"}}</span>
+              <button type="button" data-action="export-selected-recipe" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-file-export"></i> {{localize "CRAFTINGTABLE.GM.ExportRecipe"}}</button>
+              <button type="button" data-action="save-recipe" class="is-save" {{#unless selectedRecipe.editable}}disabled{{/unless}}><i class="fas fa-save"></i> {{localize "CRAFTINGTABLE.GM.SaveRecipe"}}</button>
+            </footer>
+          </form>
+        {{else}}
+          <article class="ctgm__sheet ctgm__empty-state">
+            <h2>{{localize "CRAFTINGTABLE.GM.NoRecipeSelected"}}</h2>
+            <p>{{localize "CRAFTINGTABLE.GM.NoRecipeHelp"}}</p>
+          </article>
+        {{/if}}
+        {{else}}
+          <section class="ctgm__recipe-browser {{#if isRecipeGridView}}is-grid{{/if}}">
+            <header class="ctgm__browser-header">
+              <div>
+                <h2>{{localize "CRAFTINGTABLE.GM.RecipesIn"}} {{activeCategoryLabel}}</h2>
+                <p>{{visibleRecipeCount}} {{localize "CRAFTINGTABLE.GM.RecipesFound"}}{{#if visibleRecipeCount}} Ă‚Â· {{localize "CRAFTINGTABLE.GM.Showing"}} {{recipeRangeStart}}-{{recipeRangeEnd}}{{/if}}</p>
+              </div>
+              <div class="ctgm__browser-actions">
+                <span class="ctgm__bulk-status">{{localize "CRAFTINGTABLE.GM.Selected"}} <strong data-bulk-selection-count>{{bulkSelectedCount}}</strong></span>
+                <select name="gm-sort" aria-label="{{localize "CRAFTINGTABLE.GM.SortRecipes"}}">
+                  {{#each recipeSortOptions}}
+                    <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                  {{/each}}
+                </select>
+                <button type="button" class="{{#if isRecipeListView}}is-active{{/if}}" data-action="set-recipe-view" data-view="list" title="{{localize "CRAFTINGTABLE.GM.ListView"}}" aria-label="{{localize "CRAFTINGTABLE.GM.ListView"}}" aria-pressed="{{#if isRecipeListView}}true{{else}}false{{/if}}"><i class="fas fa-list"></i></button>
+                <button type="button" class="{{#if isRecipeGridView}}is-active{{/if}}" data-action="set-recipe-view" data-view="grid" title="{{localize "CRAFTINGTABLE.GM.GridView"}}" aria-label="{{localize "CRAFTINGTABLE.GM.GridView"}}" aria-pressed="{{#if isRecipeGridView}}true{{else}}false{{/if}}"><i class="fas fa-th-large"></i></button>
+              </div>
+            </header>
+            <div class="ctgm__browser-list">
+              {{#if recipes.length}}
+                {{#each recipes}}
+                  <article class="ctgm__browser-card {{#if selected}}is-active{{/if}}" data-recipe-uuid="{{uuid}}">
+                    <label class="ctgm__bulk-select" title="{{localize "CRAFTINGTABLE.GM.SelectForTransfer"}}">
+                      <input type="checkbox" data-recipe-bulk-select data-recipe-uuid="{{uuid}}" aria-label="{{localize "CRAFTINGTABLE.GM.SelectForTransfer"}}: {{name}}" {{#if bulkSelected}}checked{{/if}} />
+                      <span></span>
+                    </label>
+                    <img src="{{img}}" alt="" />
+                    <div class="ctgm__browser-card-main">
+                      <div class="ctgm__browser-card-title">
+                        <h3>{{name}}</h3>
+                        <span class="ctgm__rarity-pill is-{{rarity}}">{{rarityLabel}}</span>{{#if invalid}}<span class="ctgm__validation-pill">{{localize "CRAFTINGTABLE.GM.Invalid"}}</span>{{/if}}
+                      </div>
+                      <p>{{categoryLabel}}</p>
+                      <div class="ctgm__browser-meta">
+                        <span><i class="fas fa-clock"></i> {{time}}</span>
+                        <span><i class="fas fa-coins"></i> {{costGp}} {{costDenomination}}</span>
+                        <span><i class="fas fa-box-open"></i> {{resultName}} x{{result.quantity}}</span>
+                      </div>
+                    </div>
+                    <div class="ctgm__browser-card-actions">
+                      <button type="button" class="ctgm__mini-action {{#if favorite}}is-favorite{{/if}}" data-action="toggle-favorite-recipe" data-recipe-uuid="{{uuid}}" title="{{localize "CRAFTINGTABLE.GM.Favorite"}}" aria-label="{{localize "CRAFTINGTABLE.GM.Favorite"}}" aria-pressed="{{#if favorite}}true{{else}}false{{/if}}">
+                        <i class="{{#if favorite}}fas{{else}}far{{/if}} fa-star"></i>
+                      </button>
+                      <button type="button" class="ctgm__mini-action" data-action="edit-recipe" data-recipe-uuid="{{uuid}}" title="{{localize "CRAFTINGTABLE.GM.Edit"}}" aria-label="{{localize "CRAFTINGTABLE.GM.Edit"}}">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button type="button" class="ctgm__mini-action is-danger" data-action="delete-recipe" data-recipe-uuid="{{uuid}}" title="{{localize "CRAFTINGTABLE.GM.Delete"}}" aria-label="{{localize "CRAFTINGTABLE.GM.Delete"}}" {{#unless editable}}disabled{{/unless}}>
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </article>
+                {{/each}}
+              {{else}}
+                <article class="ctgm__sheet ctgm__empty-state">
+                  <h2>{{localize "CRAFTINGTABLE.GM.NoRecipesFound"}}</h2>
+                  <p>{{localize "CRAFTINGTABLE.GM.NoRecipesHelp"}}</p>
+                </article>
+              {{/if}}
+            </div>
+            {{#if pagination.hasPages}}
+              <footer class="ctgm__pagination">
+                <button type="button" data-action="set-recipe-page" data-page="first" aria-label="{{localize "CRAFTINGTABLE.GM.FirstPage"}}" title="{{localize "CRAFTINGTABLE.GM.FirstPage"}}" {{#unless pagination.canPrevious}}disabled{{/unless}}><i class="fas fa-angle-double-left"></i></button>
+                <button type="button" data-action="set-recipe-page" data-page="prev" aria-label="{{localize "CRAFTINGTABLE.GM.PreviousPage"}}" title="{{localize "CRAFTINGTABLE.GM.PreviousPage"}}" {{#unless pagination.canPrevious}}disabled{{/unless}}><i class="fas fa-angle-left"></i></button>
+                {{#each pagination.pages}}
+                  <button type="button" class="{{#if active}}is-active{{/if}}" data-action="set-recipe-page" data-page="{{page}}" aria-label="{{localize "CRAFTINGTABLE.GM.Page" page=page}}" aria-current="{{#if active}}page{{else}}false{{/if}}">{{page}}</button>
+                {{/each}}
+                <button type="button" data-action="set-recipe-page" data-page="next" aria-label="{{localize "CRAFTINGTABLE.GM.NextPage"}}" title="{{localize "CRAFTINGTABLE.GM.NextPage"}}" {{#unless pagination.canNext}}disabled{{/unless}}><i class="fas fa-angle-right"></i></button>
+                <button type="button" data-action="set-recipe-page" data-page="last" aria-label="{{localize "CRAFTINGTABLE.GM.LastPage"}}" title="{{localize "CRAFTINGTABLE.GM.LastPage"}}" {{#unless pagination.canNext}}disabled{{/unless}}><i class="fas fa-angle-double-right"></i></button>
+              </footer>
+            {{/if}}
+          </section>
+        {{/if}}
+      </main>

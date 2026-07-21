@@ -1,0 +1,53 @@
+{
+    "id":  "crafting-table",
+    "type":  "module",
+    "title":  "Crafting Table",
+    "socket":  true,
+    "description":  "Recipe management and player crafting for D\u0026D 5e with progress, outcomes, permissions, Custom Macros, and JSON transfer.",
+    "version":  "1.0.15",
+    "compatibility":  {
+                          "minimum":  "13",
+                          "verified":  "14"
+                      },
+    "relationships":  {
+                          "systems":  [
+                                          {
+                                              "id":  "dnd5e",
+                                              "type":  "system",
+                                              "compatibility":  {
+                                                                    "minimum":  "5.0.0"
+                                                                }
+                                          }
+                                      ]
+                      },
+    "authors":  [
+                    {
+                        "name":  "Taraan \u0026 Codex"
+                    }
+                ],
+    "esmodules":  [
+                      "scripts/crafting-table.js"
+                  ],
+    "styles":  [
+                   "styles/crafting-table.css"
+               ],
+    "languages":  [
+                      {
+                          "lang":  "en",
+                          "name":  "English",
+                          "path":  "lang/en.json"
+                      },
+                      {
+                          "lang":  "pl",
+                          "name":  "Polski",
+                          "path":  "lang/pl.json"
+                      }
+                  ],
+    "url":  "https://github.com/NylramWhist/crafting-table",
+    "bugs":  "https://github.com/NylramWhist/crafting-table/issues",
+    "changelog":  "https://github.com/NylramWhist/crafting-table/blob/main/CHANGELOG.md",
+    "license":  "LICENSE",
+    "readme":  "https://github.com/NylramWhist/crafting-table/blob/main/README.md",
+    "manifest":  "https://raw.githubusercontent.com/NylramWhist/crafting-table/main/module.json",
+    "download":  "https://github.com/NylramWhist/crafting-table/releases/download/v1.0.15/crafting-table-v1.0.15.zip"
+}

@@ -1,0 +1,361 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NylramWhist/crafting-table/blob/main/data/recipe-schema-v5.json",
+  "title": "Crafting Table Recipe v5",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "recipeId",
+    "isRecipe",
+    "category",
+    "rarity",
+    "ability",
+    "dc",
+    "ingredients",
+    "results",
+    "outcomes",
+    "permissions"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 5 },
+    "recipeId": { "type": "string", "pattern": "^(recipe-[A-Za-z0-9_-]{8,}|legacy-[a-f0-9]{16})$" },
+    "isRecipe": { "const": true },
+    "sourceRecipeUuid": { "type": "string" },
+    "favorite": { "type": "boolean" },
+    "category": { "type": "string", "minLength": 1 },
+    "rarity": { "enum": ["common", "uncommon", "rare", "veryRare", "legendary"] },
+    "description": { "type": "string" },
+    "toolName": { "type": "string" },
+    "toolUuid": { "type": "string" },
+    "toolKey": { "type": "string" },
+    "ability": { "enum": ["str", "dex", "con", "int", "wis", "cha"] },
+    "dc": { "type": "number", "minimum": 0 },
+    "proficiencyRequired": { "type": "boolean" },
+    "time": { "type": "string" },
+    "timeValue": { "type": "number", "exclusiveMinimum": 0 },
+    "timeUnit": { "enum": ["minutes", "hours", "days", "weeks"] },
+    "costGp": { "type": "number", "minimum": 0 },
+    "costDenomination": { "enum": ["cp", "sp", "ep", "gp", "pp"] },
+    "defaultMode": { "enum": ["automatic", "gm-approval", "manual"] },
+    "showToPlayers": { "type": "boolean" },
+    "requirements": { "$ref": "#/$defs/requirements" },
+    "ingredients": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ingredientReference" }
+    },
+    "result": {
+      "anyOf": [
+        { "$ref": "#/$defs/resultReference" },
+        { "type": "null" }
+      ]
+    },
+    "results": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/resultReference" }
+    },
+    "outcomes": { "$ref": "#/$defs/outcomes" },
+    "failure": { "type": "string" },
+    "failureData": { "$ref": "#/$defs/legacyFailureData" },
+    "permissions": { "$ref": "#/$defs/permissions" },
+    "notes": { "$ref": "#/$defs/notes" }
+  },
+  "$defs": {
+    "namedReference": {
+      "anyOf": [
+        { "required": ["name"] },
+        { "required": ["uuid"] }
+      ]
+    },
+    "ingredientReference": {
+      "type": "object",
+      "required": ["quantity", "type", "matchMode", "consumed"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "uuid": { "type": "string", "minLength": 1 },
+        "img": { "type": "string" },
+        "quantity": { "type": "number", "minimum": 1 },
+        "type": { "enum": ["required", "optional"] },
+        "matchMode": { "enum": ["uuid", "name", "tag"] },
+        "consumed": { "type": "boolean" }
+      },
+      "allOf": [{ "$ref": "#/$defs/namedReference" }],
+      "additionalProperties": false
+    },
+    "resultReference": {
+      "type": "object",
+      "required": ["quantity"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "uuid": { "type": "string", "minLength": 1 },
+        "img": { "type": "string" },
+        "quantity": { "type": "number", "minimum": 1 }
+      },
+      "allOf": [{ "$ref": "#/$defs/namedReference" }],
+      "additionalProperties": false
+    },
+    "outcomeResult": {
+      "type": "object",
+      "required": ["quantity", "chance"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "uuid": { "type": "string", "minLength": 1 },
+        "img": { "type": "string" },
+        "quantity": { "type": "number", "minimum": 1 },
+        "chance": { "type": "number", "minimum": 0, "maximum": 100 }
+      },
+      "allOf": [{ "$ref": "#/$defs/namedReference" }],
+      "additionalProperties": false
+    },
+    "partialEffect": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": [
+            "gmDecision",
+            "reducedOutput",
+            "reducedQuality",
+            "increasedTime",
+            "consumeExtraMaterials",
+            "unstableItem",
+            "weakerItem"
+          ]
+        },
+        "qualityTier": { "enum": ["poor", "normal", "excellent", "masterwork"] },
+        "value": { "type": ["string", "number"] },
+        "conditions": { "type": "string" },
+        "item": {
+          "anyOf": [
+            { "$ref": "#/$defs/outcomeResult" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "criticalSuccessEffect": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["doubleOutput", "noGoldCost", "reduceTime", "bonusItem"] },
+        "multiplier": { "type": "number", "exclusiveMinimum": 0 },
+        "value": { "type": ["string", "number"] },
+        "conditions": { "type": "string" },
+        "item": {
+          "anyOf": [
+            { "$ref": "#/$defs/outcomeResult" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "failureOutcome": {
+      "type": "object",
+      "required": ["type", "results", "flavorText", "macroUuid"],
+      "properties": {
+        "type": {
+          "enum": [
+            "noPenalty",
+            "loseAllIngredients",
+            "loseHalfIngredients",
+            "createFailureItem",
+            "gmDecision",
+            "customMacro"
+          ]
+        },
+        "results": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/outcomeResult" }
+        },
+        "flavorText": { "type": "string" },
+        "macroUuid": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "type": { "const": "customMacro" } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": { "macroUuid": { "type": "string", "minLength": 1 } },
+            "required": ["macroUuid"]
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "partialSuccessOutcome": {
+      "type": "object",
+      "required": ["enabled", "missBy", "effect", "additionalEffects"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "missBy": { "type": "number", "exclusiveMinimum": 0 },
+        "effect": { "$ref": "#/$defs/partialEffect" },
+        "additionalEffects": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/partialEffect" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "criticalSuccessTrigger": {
+      "type": "object",
+      "required": ["type", "threshold"],
+      "properties": {
+        "type": { "enum": ["nat20", "beatDcBy5", "beatDcBy10", "custom"] },
+        "threshold": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "criticalFailureTrigger": {
+      "type": "object",
+      "required": ["type", "threshold"],
+      "properties": {
+        "type": { "enum": ["nat1", "missDcBy10", "custom"] },
+        "threshold": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "criticalFailureEffect": {
+      "type": "object",
+      "required": ["type", "macroUuid"],
+      "properties": {
+        "type": { "enum": ["createFailureItem", "destroyTool", "gmDecision", "customMacro"] },
+        "macroUuid": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "type": { "const": "customMacro" } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": { "macroUuid": { "type": "string", "minLength": 1 } },
+            "required": ["macroUuid"]
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "outcomes": {
+      "type": "object",
+      "required": ["success", "failure", "partialSuccess", "criticalSuccess", "criticalFailure"],
+      "properties": {
+        "success": { "type": "object", "additionalProperties": false },
+        "failure": { "$ref": "#/$defs/failureOutcome" },
+        "partialSuccess": { "$ref": "#/$defs/partialSuccessOutcome" },
+        "criticalSuccess": {
+          "type": "object",
+          "required": ["enabled", "trigger", "effects"],
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "trigger": { "$ref": "#/$defs/criticalSuccessTrigger" },
+            "effects": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/criticalSuccessEffect" }
+            }
+          },
+          "additionalProperties": false
+        },
+        "criticalFailure": {
+          "type": "object",
+          "required": ["enabled", "trigger", "effect", "results"],
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "trigger": { "$ref": "#/$defs/criticalFailureTrigger" },
+            "effect": { "$ref": "#/$defs/criticalFailureEffect" },
+            "results": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/outcomeResult" }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "requirements": {
+      "type": "object",
+      "required": ["tool", "ability", "dc", "proficiencyRequired", "time", "cost", "defaultMode"],
+      "properties": {
+        "tool": {
+          "type": "object",
+          "required": ["name", "uuid", "key"],
+          "properties": {
+            "name": { "type": "string" },
+            "uuid": { "type": "string" },
+            "key": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "ability": { "enum": ["str", "dex", "con", "int", "wis", "cha"] },
+        "dc": { "type": "number", "minimum": 0 },
+        "proficiencyRequired": { "type": "boolean" },
+        "time": {
+          "type": "object",
+          "required": ["value", "unit"],
+          "properties": {
+            "value": { "type": "number", "exclusiveMinimum": 0 },
+            "unit": { "enum": ["minutes", "hours", "days", "weeks"] }
+          },
+          "additionalProperties": false
+        },
+        "cost": {
+          "type": "object",
+          "required": ["value", "denomination"],
+          "properties": {
+            "value": { "type": "number", "minimum": 0 },
+            "denomination": { "enum": ["cp", "sp", "ep", "gp", "pp"] }
+          },
+          "additionalProperties": false
+        },
+        "defaultMode": { "enum": ["automatic", "gm-approval", "manual"] }
+      },
+      "additionalProperties": false
+    },
+    "permissions": {
+      "type": "object",
+      "required": ["visibility", "knowledgeSource", "craftPermission"],
+      "properties": {
+        "visibility": { "enum": ["hidden", "visible"] },
+        "knowledgeSource": { "enum": ["globalUnlocked", "toolProficiency", "recipeItem"] },
+        "craftPermission": { "enum": ["anyPlayer", "ownerOnly", "gmOnly", "gmApprovalRequired"] },
+        "showToPlayers": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "notes": {
+      "type": "object",
+      "required": ["player", "gm"],
+      "properties": {
+        "player": { "type": "string" },
+        "gm": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "legacyFailureData": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "failureItem": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "uuid": { "type": "string" }
+              },
+              "additionalProperties": true
+            },
+            { "type": "null" }
+          ]
+        },
+        "partialSuccess": { "type": "object", "additionalProperties": true },
+        "criticalSuccess": { "type": "object", "additionalProperties": true }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

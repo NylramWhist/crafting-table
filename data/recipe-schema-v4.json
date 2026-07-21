@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NylramWhist/crafting-table/blob/main/data/recipe-schema-v4.json",
+  "title": "Crafting Table Recipe v4",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "isRecipe",
+    "category",
+    "rarity",
+    "ability",
+    "dc",
+    "ingredients",
+    "results",
+    "outcomes",
+    "permissions"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 4 },
+    "isRecipe": { "const": true },
+    "category": { "type": "string", "minLength": 1 },
+    "rarity": { "enum": ["common", "uncommon", "rare", "veryRare", "legendary"] },
+    "description": { "type": "string" },
+    "toolName": { "type": "string" },
+    "toolUuid": { "type": "string" },
+    "toolKey": { "type": "string" },
+    "ability": { "enum": ["str", "dex", "con", "int", "wis", "cha"] },
+    "dc": { "type": "number", "minimum": 0 },
+    "proficiencyRequired": { "type": "boolean" },
+    "time": { "type": "string" },
+    "timeValue": { "type": "number", "minimum": 0 },
+    "timeUnit": { "enum": ["minutes", "hours", "days", "weeks"] },
+    "costGp": { "type": "number", "minimum": 0 },
+    "costDenomination": { "enum": ["cp", "sp", "ep", "gp", "pp"] },
+    "defaultMode": { "enum": ["automatic", "gm-approval", "manual"] },
+    "showToPlayers": { "type": "boolean" },
+    "ingredients": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/itemReference" }
+    },
+    "result": {
+      "anyOf": [
+        { "$ref": "#/$defs/itemReference" },
+        { "type": "null" }
+      ]
+    },
+    "results": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/itemReference" }
+    },
+    "outcomes": { "$ref": "#/$defs/outcomes" },
+    "permissions": {
+      "type": "object",
+      "required": ["visibility", "knowledgeSource", "craftPermission"],
+      "properties": {
+        "visibility": { "enum": ["hidden", "visible"] },
+        "knowledgeSource": { "enum": ["globalUnlocked", "toolProficiency", "recipeItem"] },
+        "craftPermission": { "enum": ["anyPlayer", "ownerOnly", "gmOnly", "gmApprovalRequired"] }
+      },
+      "additionalProperties": true
+    },
+    "notes": {
+      "type": "object",
+      "properties": {
+        "player": { "type": "string" },
+        "gm": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "itemReference": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "uuid": { "type": "string" },
+        "img": { "type": "string" },
+        "quantity": { "type": "number", "minimum": 1 },
+        "chance": { "type": "number", "minimum": 0, "maximum": 100 },
+        "type": { "enum": ["required", "optional"] },
+        "matchMode": { "enum": ["uuid", "name", "tag"] },
+        "consumed": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "outcomes": {
+      "type": "object",
+      "required": ["failure", "partialSuccess", "criticalSuccess", "criticalFailure"],
+      "properties": {
+        "failure": { "type": "object" },
+        "partialSuccess": { "type": "object" },
+        "criticalSuccess": { "type": "object" },
+        "criticalFailure": { "type": "object" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

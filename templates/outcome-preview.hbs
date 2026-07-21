@@ -1,0 +1,78 @@
+<section class="ctgm ctop" aria-label="{{localize "CRAFTINGTABLE.Preview.Title"}}">
+  <header class="ctgm__top">
+    <div class="ctgm__brand">
+      <img src="{{recipeImg}}" alt="" class="ctop__icon" />
+      <div>
+        <h2>{{recipeName}}</h2>
+        <p>{{localize "CRAFTINGTABLE.Preview.Title"}}</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="ctop__body ctgm__standalone">
+    <section class="ctgm__panel" aria-labelledby="{{accessibilityId}}-summary-heading">
+      <h3 id="{{accessibilityId}}-summary-heading">{{localize "CRAFTINGTABLE.Preview.Summary"}}</h3>
+      <dl class="ctgm__summary">
+        <div><dt>{{localize "CRAFTINGTABLE.GM.Tool"}}</dt><dd>{{toolName}}</dd></div>
+        <div><dt>{{localize "CRAFTINGTABLE.GM.Ability"}}</dt><dd>{{abilityLabel}}</dd></div>
+        <div><dt>{{localize "CRAFTINGTABLE.GM.DC"}}</dt><dd>{{dc}}</dd></div>
+        <div><dt>{{localize "CRAFTINGTABLE.GM.Time"}}</dt><dd>{{time}}</dd></div>
+        <div><dt>{{localize "CRAFTINGTABLE.GM.Cost"}}</dt><dd>{{costLabel}}</dd></div>
+        <div><dt>{{localize "CRAFTINGTABLE.Preview.Results"}}</dt><dd>{{resultCount}}</dd></div>
+        <div><dt>{{localize "CRAFTINGTABLE.Preview.Proficiency"}}</dt><dd>{{#if proficiencyRequired}}{{localize "CRAFTINGTABLE.Preview.Required"}}{{else}}{{localize "CRAFTINGTABLE.Preview.Optional"}}{{/if}}</dd></div>
+      </dl>
+    </section>
+
+    <section class="ctgm__panel" aria-labelledby="{{accessibilityId}}-failure-heading">
+      <h3 id="{{accessibilityId}}-failure-heading">{{localize "CRAFTINGTABLE.GM.Failure"}}</h3>
+      <p><strong>{{outcomes.failure.summary}}</strong></p>
+      <p>{{outcomes.failure.infoText}}</p>
+      {{#if failureResults.length}}
+        <ul class="ctop__list">
+          {{#each failureResults}}
+            <li>{{name}} x{{quantity}}{{#if chance}} ({{chance}}%){{/if}}</li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    </section>
+
+    <section class="ctgm__panel" aria-labelledby="{{accessibilityId}}-partial-heading">
+      <h3 id="{{accessibilityId}}-partial-heading">{{localize "CRAFTINGTABLE.GM.PartialSuccess"}}</h3>
+      <p><strong>{{outcomes.partialSuccess.summary}}</strong></p>
+      <p>{{outcomes.partialSuccess.exampleText}}</p>
+      {{#if partialEffects.length}}
+        <ul class="ctop__list">
+          {{#each partialEffects}}
+            <li>{{label}}{{#if value}}: {{value}}{{/if}}{{#if conditions}} - {{conditions}}{{/if}}</li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    </section>
+
+    <section class="ctgm__panel" aria-labelledby="{{accessibilityId}}-critical-success-heading">
+      <h3 id="{{accessibilityId}}-critical-success-heading">{{localize "CRAFTINGTABLE.GM.CriticalSuccess"}}</h3>
+      <p><strong>{{outcomes.criticalSuccess.summary}}</strong></p>
+      <p>{{outcomes.criticalSuccess.exampleText}}</p>
+      {{#if criticalSuccessEffects.length}}
+        <ul class="ctop__list">
+          {{#each criticalSuccessEffects}}
+            <li>{{label}}{{#if item.name}}: {{item.name}} x{{item.quantity}}{{/if}}{{#if value}}: {{value}}{{/if}}{{#if conditions}} - {{conditions}}{{/if}}</li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    </section>
+
+    <section class="ctgm__panel" aria-labelledby="{{accessibilityId}}-critical-failure-heading">
+      <h3 id="{{accessibilityId}}-critical-failure-heading">{{localize "CRAFTINGTABLE.GM.CriticalFailure"}}</h3>
+      <p><strong>{{outcomes.criticalFailure.summary}}</strong></p>
+      <p>{{outcomes.criticalFailure.exampleText}}</p>
+      {{#if criticalFailureResults.length}}
+        <ul class="ctop__list">
+          {{#each criticalFailureResults}}
+            <li>{{name}} x{{quantity}}{{#if chance}} ({{chance}}%){{/if}}</li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    </section>
+  </div>
+</section>

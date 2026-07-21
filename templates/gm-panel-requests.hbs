@@ -1,0 +1,135 @@
+    <section class="ctgm__standalone ctgm__ongoing-panel tab {{tabs.requests.cssClass}}" id="ctgm-panel-requests" role="tabpanel" aria-labelledby="ctgm-tab-requests" data-group="primary" data-tab="requests">
+      <h2>{{localize "CRAFTINGTABLE.GM.Requests"}}</h2>
+      <p>{{localize "CRAFTINGTABLE.GM.RequestsIntro"}}</p>
+      <div class="ctgm__tool-grid">
+        <label class="ctgm__wide">
+          {{localize "CRAFTINGTABLE.GM.Search"}}
+          <input type="search" name="gm-requests-search" value="{{requestSearch}}" placeholder="{{localize "CRAFTINGTABLE.GM.SearchActorRecipe"}}" autocomplete="off" />
+        </label>
+        <label>
+          {{localize "CRAFTINGTABLE.GM.Status"}}
+          <select name="gm-requests-status">
+            {{#each requestStatusOptions}}
+              <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </label>
+        <label>
+          {{localize "CRAFTINGTABLE.GM.RequestSort"}}
+          <select name="gm-requests-sort">
+            {{#each requestSortOptions}}
+              <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </label>
+        <label>
+          {{localize "CRAFTINGTABLE.GM.OngoingSort"}}
+          <select name="gm-ongoing-sort">
+            {{#each ongoingSortOptions}}
+              <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </label>
+      </div>
+      <div class="ctgm__browser-meta">
+        <span>{{localize "CRAFTINGTABLE.GM.Pending"}} {{requestSummary.pending}}</span>
+        <span>{{localize "CRAFTINGTABLE.GM.Approved"}} {{requestSummary.approved}}</span>
+        <span>{{localize "CRAFTINGTABLE.GM.Processing"}} {{requestSummary.processing}}</span>
+        <span>{{localize "CRAFTINGTABLE.GM.Rejected"}} {{requestSummary.rejected}}</span>
+        <span>{{localize "CRAFTINGTABLE.GM.Completed"}} {{requestSummary.completed}}</span>
+      </div>
+      <div class="ctgm__inline-actions">
+        <button type="button" data-action="clear-finished-requests" {{#unless hasFinishedRequests}}disabled{{/unless}}><i class="fas fa-broom"></i> {{localize "CRAFTINGTABLE.GM.ClearFinishedRequests"}}</button>
+        <button type="button" data-action="clear-finished-outcomes" {{#unless hasFinishedOutcomes}}disabled{{/unless}}><i class="fas fa-broom"></i> {{localize "CRAFTINGTABLE.GM.ClearFinishedOutcomes"}}</button>
+        <button type="button" data-action="clear-finished-ongoing" {{#unless hasFinishedOngoingCrafts}}disabled{{/unless}}><i class="fas fa-broom"></i> {{localize "CRAFTINGTABLE.GM.ClearFinishedOngoing"}}</button>
+      </div>
+      {{#if hasInterruptedOperations}}
+        <h3>{{localize "CRAFTINGTABLE.GM.InterruptedOperations"}}</h3>
+        <p class="ctgm__empty">{{localize "CRAFTINGTABLE.GM.InterruptedOperationsHelp"}}</p>
+        <div class="ctgm__ongoing-list">
+          {{#each interruptedOperations}}
+            <article class="ctgm__ongoing-card ctgm__request-card is-processing">
+              <i class="fas fa-triangle-exclamation"></i>
+              <div>
+                <strong>{{actorName}}</strong>
+                <span>{{action}}</span>
+                <small>{{localize "CRAFTINGTABLE.GM.Started"}} {{startedLabel}}</small>
+              </div>
+              <button type="button" data-action="review-interrupted-operation" data-actor-uuid="{{actorUuid}}" data-operation-id="{{id}}" title="{{localize "CRAFTINGTABLE.GM.MarkReviewed"}}" aria-label="{{localize "CRAFTINGTABLE.GM.MarkReviewed"}}"><i class="fas fa-check"></i></button>
+            </article>
+          {{/each}}
+        </div>
+      {{/if}}
+      <h3>{{localize "CRAFTINGTABLE.GM.OutcomeQueue"}}</h3>
+      <p class="ctgm__empty">{{localize "CRAFTINGTABLE.GM.OutcomeQueueHelp"}}</p>
+      {{#if hasPendingOutcomes}}
+        <div class="ctgm__ongoing-list ctgm__outcome-queue">
+          {{#each pendingOutcomes}}
+            <article class="ctgm__ongoing-card ctgm__request-card ctgm__outcome-card is-pending">
+              <img src="{{recipeImg}}" alt="" />
+              <div>
+                <strong>{{recipeName}}</strong>
+                <span>{{actorName}} &middot; {{outcomeLabel}}</span>
+                <small>{{localize "CRAFTINGTABLE.GM.Requested"}} {{createdLabel}}{{#if requestedBy}} &middot; {{requestedBy}}{{/if}}</small>
+              </div>
+              <div class="ctgm__request-actions ctgm__outcome-actions">
+                <button type="button" data-action="resolve-pending-outcome" data-resolution="configured" data-actor-uuid="{{actorUuid}}" data-outcome-id="{{id}}" title="{{localize "CRAFTINGTABLE.GM.ApplyConfiguredOutcome"}}"><i class="fas fa-wand-magic-sparkles"></i><span>{{localize "CRAFTINGTABLE.GM.ConfiguredOutcome"}}</span></button>
+                <button type="button" data-action="resolve-pending-outcome" data-resolution="success" data-actor-uuid="{{actorUuid}}" data-outcome-id="{{id}}" title="{{localize "CRAFTINGTABLE.GM.ResolveAsSuccess"}}"><i class="fas fa-check"></i><span>{{localize "CRAFTINGTABLE.GM.Success"}}</span></button>
+                <button type="button" data-action="resolve-pending-outcome" data-resolution="failure" data-actor-uuid="{{actorUuid}}" data-outcome-id="{{id}}" title="{{localize "CRAFTINGTABLE.GM.ResolveAsFailure"}}"><i class="fas fa-xmark"></i><span>{{localize "CRAFTINGTABLE.GM.Failure"}}</span></button>
+                <button type="button" data-action="resolve-pending-outcome" data-resolution="noEffect" data-actor-uuid="{{actorUuid}}" data-outcome-id="{{id}}" title="{{localize "CRAFTINGTABLE.GM.ResolveWithoutEffect"}}"><i class="fas fa-forward"></i><span>{{localize "CRAFTINGTABLE.GM.NoEffect"}}</span></button>
+                <button type="button" data-action="cancel-pending-outcome" data-actor-uuid="{{actorUuid}}" data-outcome-id="{{id}}" title="{{localize "CRAFTINGTABLE.GM.ReturnToPlayer"}}"><i class="fas fa-rotate-left"></i><span>{{localize "CRAFTINGTABLE.GM.Return"}}</span></button>
+              </div>
+            </article>
+          {{/each}}
+        </div>
+      {{else}}
+        <p class="ctgm__empty">{{localize "CRAFTINGTABLE.GM.NoPendingOutcomes"}}</p>
+      {{/if}}
+      <h3>{{localize "CRAFTINGTABLE.GM.ApprovalQueue"}}</h3>
+      {{#if hasCraftRequests}}
+        <div class="ctgm__ongoing-list">
+          {{#each craftRequests}}
+            <article class="ctgm__ongoing-card ctgm__request-card is-{{status}}">
+              <img src="{{recipeImg}}" alt="" />
+              <div>
+                <strong>{{recipeName}}</strong>
+                <span>{{actorName}} Â· {{statusLabel}}</span>
+                <small>{{localize "CRAFTINGTABLE.GM.Requested"}} {{requestedLabel}} Â· {{localize "CRAFTINGTABLE.GM.Updated"}} {{updatedLabel}}</small>
+              </div>
+              <div class="ctgm__request-actions">
+                {{#if isPending}}
+                  <button type="button" data-action="approve-craft-request" data-actor-uuid="{{actorUuid}}" data-request-id="{{id}}" title="{{localize "CRAFTINGTABLE.GM.ApproveRequest"}}" aria-label="{{localize "CRAFTINGTABLE.GM.ApproveRequest"}}"><i class="fas fa-check"></i></button>
+                  <button type="button" data-action="reject-craft-request" data-actor-uuid="{{actorUuid}}" data-request-id="{{id}}" title="{{localize "CRAFTINGTABLE.GM.RejectRequest"}}" aria-label="{{localize "CRAFTINGTABLE.GM.RejectRequest"}}"><i class="fas fa-xmark"></i></button>
+                {{/if}}
+                {{#unless isProcessing}}
+                  <button type="button" data-action="clear-craft-request" data-actor-uuid="{{actorUuid}}" data-request-id="{{id}}" title="{{localize "CRAFTINGTABLE.GM.ClearRequest"}}" aria-label="{{localize "CRAFTINGTABLE.GM.ClearRequest"}}"><i class="fas fa-trash"></i></button>
+                {{/unless}}
+              </div>
+            </article>
+          {{/each}}
+        </div>
+      {{else}}
+        <p class="ctgm__empty">{{localize "CRAFTINGTABLE.GM.NoRequests"}}</p>
+      {{/if}}
+
+      <h3>{{localize "CRAFTINGTABLE.GM.OngoingCrafts"}}</h3>
+      {{#if hasOngoingCrafts}}
+        <div class="ctgm__ongoing-list">
+          {{#each ongoingCrafts}}
+            <article class="ctgm__ongoing-card">
+              <img src="{{recipeImg}}" alt="" />
+              <div>
+                <strong>{{recipeName}}</strong>
+                <span>{{actorName}}</span>
+                <small>{{progressText}} - {{percent}}% {{localize "CRAFTINGTABLE.GM.CompleteSuffix"}}</small>
+              </div>
+              <span class="ctgm__ongoing-percent">{{percent}}%</span>
+              <button type="button" data-action="mark-ongoing-ready" data-actor-uuid="{{actorUuid}}" data-craft-id="{{id}}" data-recipe-id="{{recipeId}}" data-recipe-uuid="{{recipeUuid}}" title="{{localize "CRAFTINGTABLE.GM.MarkReady"}}" aria-label="{{localize "CRAFTINGTABLE.GM.MarkReady"}}"><i class="fas fa-flag-checkered"></i></button>
+              <button type="button" data-action="clear-ongoing-craft" data-actor-uuid="{{actorUuid}}" data-craft-id="{{id}}" data-recipe-id="{{recipeId}}" data-recipe-uuid="{{recipeUuid}}" title="{{localize "CRAFTINGTABLE.GM.ClearOngoing"}}" aria-label="{{localize "CRAFTINGTABLE.GM.ClearOngoing"}}"><i class="fas fa-trash"></i></button>
+            </article>
+          {{/each}}
+        </div>
+      {{else}}
+        <p class="ctgm__empty">{{localize "CRAFTINGTABLE.GM.NoOngoing"}}</p>
+      {{/if}}
+    </section>

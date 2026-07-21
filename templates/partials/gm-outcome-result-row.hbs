@@ -1,0 +1,23 @@
+<div class="ctgm__outcome-result-row" data-outcome-result-row data-editor-row>
+  <div class="ctgm__row-order" aria-label="{{localize "CRAFTINGTABLE.GM.ReorderRow"}}">
+    <button type="button" class="ctgm__drag-handle" draggable="true" data-row-drag-handle title="{{localize "CRAFTINGTABLE.GM.DragToReorder"}}" aria-label="{{localize "CRAFTINGTABLE.GM.DragToReorder"}}" {{#unless editable}}disabled{{/unless}} {{#unless canCreateResults}}disabled{{/unless}}><i class="fas fa-grip-vertical" aria-hidden="true"></i></button>
+    <button type="button" class="ctgm__row-move" data-action="move-row-up" title="{{localize "CRAFTINGTABLE.GM.MoveUp"}}" aria-label="{{localize "CRAFTINGTABLE.GM.MoveUp"}}" {{#unless editable}}disabled{{/unless}} {{#unless canCreateResults}}disabled{{/unless}}><i class="fas fa-chevron-up" aria-hidden="true"></i></button>
+    <button type="button" class="ctgm__row-move" data-action="move-row-down" title="{{localize "CRAFTINGTABLE.GM.MoveDown"}}" aria-label="{{localize "CRAFTINGTABLE.GM.MoveDown"}}" {{#unless editable}}disabled{{/unless}} {{#unless canCreateResults}}disabled{{/unless}}><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+  </div>
+  <img class="ctgm__row-icon" src="{{img}}" alt="" />
+  <label>
+    {{localize "CRAFTINGTABLE.GM.Item"}}
+    <input type="text" name="outcome.result.name" value="{{name}}" placeholder="{{localize "CRAFTINGTABLE.GM.DropItem"}}" {{#unless editable}}readonly{{/unless}} {{#unless canCreateResults}}readonly{{/unless}} />
+  </label>
+  <input type="hidden" name="outcome.result.uuid" value="{{uuid}}" />
+  <input type="hidden" name="outcome.result.img" value="{{img}}" />
+  <label>
+    {{localize "CRAFTINGTABLE.GM.Qty"}}
+    <input type="number" name="outcome.result.quantity" value="{{quantity}}" min="1" step="1" required {{#unless editable}}readonly{{/unless}} {{#unless canCreateResults}}readonly{{/unless}} />
+  </label>
+  <label>
+    {{localize "CRAFTINGTABLE.GM.Chance"}}
+    <input type="number" name="outcome.result.chance" value="{{chance}}" min="0" max="100" step="1" required {{#unless editable}}readonly{{/unless}} {{#unless canCreateResults}}readonly{{/unless}} />
+  </label>
+  <button type="button" class="ctgm__icon-action is-danger" data-action="remove-outcome-result" title="{{localize "CRAFTINGTABLE.GM.RemoveOutcome"}}" aria-label="{{localize "CRAFTINGTABLE.GM.RemoveOutcome"}}" {{#unless editable}}disabled{{/unless}} {{#unless canCreateResults}}disabled{{/unless}}><i class="fas fa-trash"></i></button>
+</div>

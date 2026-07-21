@@ -1,0 +1,13 @@
+    <section class="ctgm__standalone tab {{tabs.importExport.cssClass}}" id="ctgm-panel-import-export" role="tabpanel" aria-labelledby="ctgm-tab-import-export" data-group="primary" data-tab="import-export">
+      <h2>{{localize "CRAFTINGTABLE.GM.ImportExport"}}</h2>
+      <p>{{localize "CRAFTINGTABLE.GM.ImportExportIntro"}}</p>
+      <p>{{localize "CRAFTINGTABLE.GM.SelectedBrowser"}} <strong data-bulk-selection-count>{{bulkSelectedCount}}</strong></p>
+      <div class="ctgm__tool-grid">
+        <button type="button" data-action="import-recipes-from-json"><i class="fas fa-file-import"></i> {{localize "CRAFTINGTABLE.GM.ImportJson"}}</button>
+        <button type="button" data-action="export-selected-recipe" {{#unless selectedRecipe}}disabled{{/unless}}><i class="fas fa-file-export"></i> {{localize "CRAFTINGTABLE.GM.ExportCurrentJson"}}</button>
+        <button type="button" data-action="export-selected-recipes" data-bulk-selection-required {{#unless hasBulkSelection}}disabled{{/unless}}><i class="fas fa-file-export"></i> {{localize "CRAFTINGTABLE.GM.ExportSelectedJson"}}</button>
+        <button type="button" data-action="export-all-recipes"><i class="fas fa-file-export"></i> {{localize "CRAFTINGTABLE.GM.ExportAllJson"}}</button>
+        <button type="button" data-action="clear-recipe-selection" data-bulk-selection-required {{#unless hasBulkSelection}}disabled{{/unless}}><i class="fas fa-times"></i> {{localize "CRAFTINGTABLE.GM.ClearSelection"}}</button>
+      </div>
+      <p class="ctgm__empty">{{localize "CRAFTINGTABLE.GM.ImportExportHelp"}}</p>
+    </section>

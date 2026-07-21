@@ -1,0 +1,25 @@
+<main class="d5ecb__recipes" aria-label="{{labels.recipeList}}">
+  <header class="d5ecb__list-header">
+    <h3>{{labels.knownRecipes}}</h3>
+    <span aria-live="polite">{{recipes.length}}</span>
+  </header>
+  {{#if recipes.length}}
+    <div class="d5ecb__recipe-list">
+      {{#each recipes}}
+        <button type="button" class="d5ecb__recipe {{#if selected}}is-active{{/if}}" data-recipe-uuid="{{uuid}}" aria-pressed="{{#if selected}}true{{else}}false{{/if}}" aria-controls="crafting-table-recipe-details-{{../actor.id}}">
+          <img src="{{img}}" alt="" />
+          <span class="d5ecb__recipe-main">
+            <strong>{{name}}</strong>
+            <small>{{categoryLabel}}</small>
+            <em class="d5ecb__recipe-status {{statusClass}}"><i class="{{statusIconClass}}" aria-hidden="true"></i><span>{{statusLabel}}</span></em>
+          </span>
+        </button>
+      {{/each}}
+    </div>
+  {{else}}
+    <div class="d5ecb__empty-state" role="status">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <p>{{labels.noRecipes}}</p>
+    </div>
+  {{/if}}
+</main>

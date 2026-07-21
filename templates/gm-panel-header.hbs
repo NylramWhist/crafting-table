@@ -1,0 +1,11 @@
+  <header class="ctgm__top">
+    <div class="ctgm__brand">
+      <i class="fas fa-hammer"></i>
+      <h2>{{localize "CRAFTINGTABLE.GM.PanelTitle"}}</h2>
+    </div>
+    <nav class="ctgm__tabs tabs" role="tablist" aria-label="{{localize "CRAFTINGTABLE.GM.PanelSections"}}">
+      <button type="button" id="ctgm-tab-recipes" role="tab" aria-controls="ctgm-panel-recipes" aria-selected="{{#if tabs.recipes.active}}true{{else}}false{{/if}}" tabindex="{{#if tabs.recipes.active}}0{{else}}-1{{/if}}" data-action="tab" data-group="primary" data-tab="recipes" class="{{tabs.recipes.cssClass}}">{{localize tabs.recipes.label}}</button>
+      <button type="button" id="ctgm-tab-requests" role="tab" aria-controls="ctgm-panel-requests" aria-selected="{{#if tabs.requests.active}}true{{else}}false{{/if}}" tabindex="{{#if tabs.requests.active}}0{{else}}-1{{/if}}" data-action="tab" data-group="primary" data-tab="requests" class="{{tabs.requests.cssClass}}">{{localize tabs.requests.label}}{{#if pendingGmActionCount}} <span class="ctgm__tab-count">{{pendingGmActionCount}}</span>{{/if}}</button>
+      <button type="button" id="ctgm-tab-import-export" role="tab" aria-controls="ctgm-panel-import-export" aria-selected="{{#if tabs.importExport.active}}true{{else}}false{{/if}}" tabindex="{{#if tabs.importExport.active}}0{{else}}-1{{/if}}" data-action="tab" data-group="primary" data-tab="import-export" class="{{tabs.importExport.cssClass}}">{{localize tabs.importExport.label}}</button>
+    </nav>
+  </header>

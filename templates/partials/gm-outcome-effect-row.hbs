@@ -1,0 +1,42 @@
+<div class="ctgm__outcome-effect-row" data-outcome-effect-row data-editor-row>
+  <div class="ctgm__row-order" aria-label="{{localize "CRAFTINGTABLE.GM.ReorderRow"}}">
+    <button type="button" class="ctgm__drag-handle" draggable="true" data-row-drag-handle title="{{localize "CRAFTINGTABLE.GM.DragToReorder"}}" aria-label="{{localize "CRAFTINGTABLE.GM.DragToReorder"}}" {{#unless editable}}disabled{{/unless}}><i class="fas fa-grip-vertical" aria-hidden="true"></i></button>
+    <button type="button" class="ctgm__row-move" data-action="move-row-up" title="{{localize "CRAFTINGTABLE.GM.MoveUp"}}" aria-label="{{localize "CRAFTINGTABLE.GM.MoveUp"}}" {{#unless editable}}disabled{{/unless}}><i class="fas fa-chevron-up" aria-hidden="true"></i></button>
+    <button type="button" class="ctgm__row-move" data-action="move-row-down" title="{{localize "CRAFTINGTABLE.GM.MoveDown"}}" aria-label="{{localize "CRAFTINGTABLE.GM.MoveDown"}}" {{#unless editable}}disabled{{/unless}}><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+  </div>
+  <label>
+    {{localize "CRAFTINGTABLE.GM.Effect"}}
+    <select name="outcome.effect.type" {{#unless editable}}disabled{{/unless}}>
+      {{#each typeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+    </select>
+  </label>
+  <label>
+    {{localize "CRAFTINGTABLE.GM.Value"}}
+    <input type="text" name="outcome.effect.value" value="{{value}}" placeholder="{{#if isPartial}}{{localize "CRAFTINGTABLE.GM.Optional"}}{{else}}{{localize "CRAFTINGTABLE.GM.ValuePlaceholder"}}{{/if}}" {{#unless editable}}readonly{{/unless}} />
+  </label>
+  {{#unless isPartial}}
+    <label class="ctgm__drop-input" data-drop-zone="outcome-effect-item">
+      {{localize "CRAFTINGTABLE.GM.Item"}}
+      <span class="ctgm__outcome-effect-item">
+        <img class="ctgm__row-icon" src="{{item.img}}" alt="" />
+        <input type="text" name="outcome.effect.itemName" value="{{item.name}}" placeholder="{{localize "CRAFTINGTABLE.GM.BonusItem"}}" {{#unless editable}}readonly{{/unless}} />
+      </span>
+      <input type="hidden" name="outcome.effect.itemUuid" value="{{item.uuid}}" />
+      <input type="hidden" name="outcome.effect.itemImg" value="{{item.img}}" />
+      <button type="button" class="ctgm__select-item" data-action="select-item" data-select-zone="outcome-effect-item" {{#unless editable}}disabled{{/unless}}><i class="fas fa-list" aria-hidden="true"></i> {{localize "CRAFTINGTABLE.GM.SelectItem"}}</button>
+    </label>
+    <label>
+      {{localize "CRAFTINGTABLE.GM.Qty"}}
+      <input type="number" name="outcome.effect.itemQuantity" value="{{item.quantity}}" min="1" step="1" {{#unless editable}}readonly{{/unless}} />
+    </label>
+    <label>
+      {{localize "CRAFTINGTABLE.GM.Chance"}}
+      <input type="number" name="outcome.effect.itemChance" value="{{item.chance}}" min="0" max="100" step="1" {{#unless editable}}readonly{{/unless}} />
+    </label>
+  {{/unless}}
+  <label>
+    {{localize "CRAFTINGTABLE.GM.Conditions"}}
+    <input type="text" name="outcome.effect.conditions" value="{{conditions}}" placeholder="{{localize "CRAFTINGTABLE.GM.Optional"}}" {{#unless editable}}readonly{{/unless}} />
+  </label>
+  <button type="button" class="ctgm__icon-action is-danger" data-action="remove-outcome-effect" title="{{localize "CRAFTINGTABLE.GM.RemoveEffect"}}" aria-label="{{localize "CRAFTINGTABLE.GM.RemoveEffect"}}" {{#unless editable}}disabled{{/unless}}><i class="fas fa-trash"></i></button>
+</div>
