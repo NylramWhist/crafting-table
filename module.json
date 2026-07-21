@@ -4,7 +4,7 @@
     "title":  "Crafting Table",
     "socket":  true,
     "description":  "Recipe management and player crafting for D\u0026D 5e with progress, outcomes, permissions, Custom Macros, and JSON transfer.",
-    "version":  "1.0.15",
+    "version":  "1.0.16",
     "compatibility":  {
                           "minimum":  "13",
                           "verified":  "14"
@@ -49,5 +49,5 @@
     "license":  "LICENSE",
     "readme":  "https://github.com/NylramWhist/crafting-table/blob/main/README.md",
     "manifest":  "https://raw.githubusercontent.com/NylramWhist/crafting-table/main/module.json",
-    "download":  "https://github.com/NylramWhist/crafting-table/releases/download/v1.0.15/crafting-table-v1.0.15.zip"
+    "download":  "https://github.com/NylramWhist/crafting-table/releases/download/v1.0.16/crafting-table-v1.0.16.zip"
 }

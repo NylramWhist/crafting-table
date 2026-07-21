@@ -1,7 +1,10 @@
 # Changelog
 
-## 1.0.15
+## 1.0.16
 
+- Fixed an editor regression where recipe switches could present only a tiny native click target; the visible track is now fully interactive, with a 40 px touch target in mobile mode.
+- Enabling an optional outcome now opens its settings immediately, while disabling it closes the section and keeps the disclosure state synchronized.
+- Isolated non-critical responsive, row-control, and validation setup so a rendering fault in one helper cannot prevent the GM editor event handlers from being registered.
 - Completed the shared visual system with semantic surface, paper, text, status, border, elevation, motion, spacing, radius, and typography tokens wired into the existing player, GM, preview, and launcher themes.
 - Unified primary, destructive, selected, hover, active, focus, disabled, accordion, and card states while retaining reduced-motion and forced-colors behavior.
 - Added non-color status icons and structured player empty states, plus 40 px mobile controls and enlarged mobile row-reordering targets.

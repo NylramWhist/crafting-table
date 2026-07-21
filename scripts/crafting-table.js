@@ -2474,21 +2474,35 @@ export class CraftingTableGmApp extends HandlebarsApplicationMixin(ApplicationV2
     if (!this.element) return;
 
     const gmLayout = GM_PANEL_LAYOUTS[getResolvedGmPanelLayout(this.position?.width)] ?? GM_PANEL_LAYOUTS.normal;
-    bindResponsiveApplication(this, {
-      preferredWidth: gmLayout.width,
-      preferredHeight: gmLayout.height,
-      minimumWidth: GM_PANEL_MIN_WIDTH,
-      minimumHeight: GM_PANEL_MIN_HEIGHT,
-      margin: APPLICATION_VIEWPORT_MARGIN,
-      layoutRootSelector: ".ctgm",
-      onWidthModeChange: (mode) => {
-        this.widthMode = mode;
-        this._syncGmResponsiveView();
-      }
-    });
-    this._syncGmResponsiveView();
-    this._syncRowOrderControls();
-    this._applyInlineValidation(this.validationErrors, { focus: this._focusValidationAfterRender });
+    try {
+      bindResponsiveApplication(this, {
+        preferredWidth: gmLayout.width,
+        preferredHeight: gmLayout.height,
+        minimumWidth: GM_PANEL_MIN_WIDTH,
+        minimumHeight: GM_PANEL_MIN_HEIGHT,
+        margin: APPLICATION_VIEWPORT_MARGIN,
+        layoutRootSelector: ".ctgm",
+        onWidthModeChange: (mode) => {
+          this.widthMode = mode;
+          this._syncGmResponsiveView();
+        }
+      });
+      this._syncGmResponsiveView();
+    } catch (error) {
+      console.error(`${MODULE_ID} | Failed to initialize the responsive GM layout.`, error);
+    }
+
+    try {
+      this._syncRowOrderControls();
+    } catch (error) {
+      console.error(`${MODULE_ID} | Failed to synchronize GM row controls.`, error);
+    }
+
+    try {
+      this._applyInlineValidation(this.validationErrors, { focus: this._focusValidationAfterRender });
+    } catch (error) {
+      console.error(`${MODULE_ID} | Failed to synchronize GM validation messages.`, error);
+    }
     this._focusValidationAfterRender = false;
 
     this._eventController?.abort();
@@ -2512,6 +2526,7 @@ export class CraftingTableGmApp extends HandlebarsApplicationMixin(ApplicationV2
     }, { signal });
     const handleEditorChange = (_event, target) => {
       if (target.name === "advancedMode") return;
+      this._syncOutcomeEnabledControl(target);
       this._clearInlineFieldError(target);
       this._markCurrentRecipeDirty();
       this._syncPreviewFromForm();
@@ -3044,6 +3059,26 @@ export class CraftingTableGmApp extends HandlebarsApplicationMixin(ApplicationV2
     if (body) body.hidden = isCollapsed;
     button?.setAttribute("aria-expanded", isCollapsed ? "false" : "true");
     return null;
+  }
+
+  _syncOutcomeEnabledControl(target) {
+    const sectionId = {
+      "outcomes.partialSuccess.enabled": "outcomePartialSuccess",
+      "outcomes.criticalSuccess.enabled": "outcomeCriticalSuccess",
+      "outcomes.criticalFailure.enabled": "outcomeCriticalFailure"
+    }[target?.name];
+    if (!sectionId) return false;
+
+    const enabled = Boolean(target.checked);
+    this.collapsedSections[sectionId] = !enabled;
+    const section = this.element?.querySelector?.(`[data-collapse-section="${sectionId}"]`);
+    const body = section?.querySelector(".ctgm__outcome-body");
+    const button = section?.querySelector("[data-collapse-toggle]");
+    section?.classList.toggle("is-disabled", !enabled);
+    section?.classList.toggle("is-open", enabled);
+    if (body) body.hidden = !enabled;
+    button?.setAttribute("aria-expanded", enabled ? "true" : "false");
+    return true;
   }
 
   _setAllCollapseSections(collapsed) {
